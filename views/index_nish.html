@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <title>Simple Chat Conversation - CodePen</title>
+
+  <style>
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:0.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
+</style>
+
+  <link rel='stylesheet' href='http://codepen.io/assets/libs/fullpage/jquery-ui.css'>
+
+    <style>
+body,html
+{
+  font-family:tahoma;
+  line-height:30px;
+  padding:0px;
+  margin:0px;
+}
+.header
+{
+  font-size:26px;
+  margin:0 auto;
+  text-align:center;
+  color:#9F6905;
+  font-weight:lighter;
+  background-color:#f0f0f0;
+  height:50px;
+  line-height:50px;
+  border-bottom:1px solid #9F6905;
+}
+.container
+{
+  width:450px;
+  cursor:default;
+  margin:20px auto;
+  max-height:350px;
+  overflow-y:scroll;
+}
+.container::-webkit-scrollbar 
+{
+width: 3px;
+max-width: 3px;
+height: auto;
+max-height: 8px;
+}
+.container::-webkit-scrollbar-thumb 
+{
+background: #f0f0f0;
+border-radius: 5px;
+max-width: 3px;
+}
+.container::-webkit-scrollbar-track {
+background: #9F6905;
+  border-radius:5px;
+}
+.Area
+{
+  margin:0 auto;
+  width:400px;
+  background-color:rgba(240, 240, 240, 0.2);
+  display:table;
+  padding:5px;
+  border-radius:5px;
+  margin-bottom:10px;
+}
+.L
+{
+  float:left;
+}
+img
+{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:2px solid #f0f0ff;
+  padding:5px;    
+}
+img:hover
+{
+    -moz-box-shadow: 0 5px 5px rgba(223, 120, 8, 1);
+-webkit-box-shadow: 0 5px 5px rgba(223, 120, 8, 1);
+box-shadow: 0 5px 5px rgba(223, 120, 8, 1);
+       -webkit-transition: all 1.5s;
+    -moz-transition: all 1.5s;
+    transition: all 1.5s;
+  cursor:pointer;
+}
+.R
+{
+    float:right;
+}
+.text
+{
+  color: #a4a4a4;
+font-family: tahoma;
+font-size: 13px;
+  font-weight:lighter;
+line-height: 30px;
+  width:300px;
+  border:1px solid #f0f0f0;
+  background-color:rgba(255, 255, 255, 0.6);
+  margin-top:10px;
+  border-radius:5px;
+  padding:5px;  
+}
+.Area textarea
+{
+  font-size:12px;
+  width:90%;
+  max-width:90%;
+  min-width:90%;
+  padding:5%;
+  border-radius:5px;
+  border:1px solid #f0f0f1;
+  max-height:50px;
+  height:50px;
+  min-height:50px;
+  background-color:#333;
+  color:#fff;
+  outline:none;
+  border:1px solid transparent;
+  resize:none;
+}
+.Area textarea:focus
+{
+  color:#333;
+  border:1px solid #ccc;
+     -webkit-transition: all 1.5s;
+    -moz-transition: all 1.5s;
+    transition: all 1.5s;
+  background-color:#fff;
+}
+.Area .note
+{
+  color:#9F6905;
+  font-size:10px;
+}
+.R .tooltip
+{
+  font-size:10px;
+  position:absolute;
+  background-color:#fff;
+  padding:5px;
+  border-radius:5px;
+  border:2px solid #9F6905;
+  margin-left:70px;
+  margin-top:-70px;
+  display:none;
+  color:#545454;
+}
+.R .tooltip:before
+{
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    border: 5px solid transparent;
+    border-right-color: #9F6905;
+    margin-top: 10px;
+    margin-left: -17px;
+}
+.R:hover .tooltip
+{
+  display:block;
+}
+
+.L .tooltip
+{
+  font-size:10px;
+  position:absolute;
+  background-color:#fff;
+  padding:5px;
+  border-radius:5px;
+  border:2px solid #9F6905;
+  margin-left:70px;
+  margin-top:-70px;
+  display:none;  
+  color:#545454;
+}
+.L .tooltip:before
+{
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    border: 5px solid transparent;
+    border-right-color: #9F6905;
+    margin-top: 10px;
+    margin-left: -17px;
+}
+.L:hover .tooltip
+{
+  display:block;
+}
+a
+{
+  text-decoration:none;
+}
+
+.Area input[type=button]
+{
+  font-size:12px;
+  padding:5px;
+  border-radius:5px;
+  border:1px solid #f0f0f1;
+  background-color:#333;
+  color:#fff;
+  outline:none;
+  border:1px solid transparent;
+  float:left;
+}
+.Area input[type=button]:hover
+{
+  color:#fff;
+  border:1px solid #ccc;
+     -webkit-transition: all 1.5s;
+    -moz-transition: all 1.5s;
+    transition: all 1.5s;
+  background-color:#9F6905;
+} 
+.validation
+{
+  float:left;
+  background-color:#ccc;
+  border-radius:5px;
+  padding:5px;
+  font-size:12px;
+  line-height:14px;
+  height:0px;
+  margin-left:5px;
+  display:none;
+}
+br
+{
+  clear:both;
+  height:20px;
+}
+</style>
+
+    <script src="../js/prefixfree.min.js"></script>
+
+    <script src="../js/modernizr.js"></script>
+	
+</head>
+
+<body>
+
+  
+<div class="container" style="width:350px" id ="chatarea">
+<input type="text" id = "MDN" value ="4698038689"/><input type="button" onclick="register()" value="REGISTER"/>
+
+
+    
+  
+
+</div>
+  <div class="Area" style="width:240px">
+    <textarea placeholder="Compose a Message..." class = "compose" ></textarea>
+      <br/><br/>
+	  <input type="file" name="file" id ="imagefile" hidden>
+	  <img src = "../img/attach.png" height ="45" width ="30" id ="attachfiles" style="margin-left:30"/>
+      <input type="button" onclick="send()" value="SEND"/>
+      <div class="validation"></div>
+      <br/>
+    <p class="note"></p>
+  </div>
+  <script src='http://codepen.io/assets/libs/fullpage/jquery_and_jqueryui.js'></script>
+	<script>
+	var fileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+var fileTypesAudio = ['mp3', 'wav', 'ogg'];
+var fileTypesVideo = ['mp4', 'webm', 'ogg'];
+		function receiveCallBack(data)
+		{
+			console.log(data);
+			to = []
+			to.push(data.fromMDN);
+			
+			// Print message from other party
+			if(data.type=='file'){
+				message = {};
+				message.contents = data.msg;
+				message.type = data.fname;
+				composeMessage('other',message,data.type);
+			}
+			else{
+				composeMessage('other',data.msg,data.type);
+			}
+			
+		}
+
+	</script>
+  <script src="../js/index.js"></script>
+  	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/api.js"></script>
+	<script>
+	$(function() {
+  makeConnection(receiveCallBack,'pushtoX');
+  to = [];
+  to.push('4698038698');
+  to.push('4698038699');
+  //sendMessage('Message','text',to);
+ });
+ function composeMessage(sender,msg,type){
+	var class1 = 'R';
+	var class2 = 'L';
+	if(sender=='me'){
+		class1 = 'L';
+	}
+	if(class1=='L'){
+		class2 = 'R';
+	}
+	
+	var div = '<div class="Area" style="width:240px">'+
+    '<div class="'+class1+'">'+
+    '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEyVlaWx0_FK_sz86j-CnUC_pfEqw_Xq_xZUm5CMIyEI_-X2hRUpx1BHL"/>'+
+    '</div>'+
+    '<div class="text '+class2+' text'+class2+'" style ="width:160px">'+msg+
+    '</div>'+
+  '</div>';
+	if(type=='image'){
+		 div = '<div class="Area" style="width:240px">'+
+    '<div class="'+class1+'">'+
+    '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEyVlaWx0_FK_sz86j-CnUC_pfEqw_Xq_xZUm5CMIyEI_-X2hRUpx1BHL"/>'+
+    '</div>'+
+    '<div class="text '+class2+' text'+class2+'" style ="width:160px">'+
+	'<img src="'+msg+'" height ="300" width ="300" />'+
+    '</div>'+
+  '</div>';
+	}
+	if(type=='audio'){
+		 div = '<div class="Area" style="width:240px">'+
+    '<div class="'+class1+'">'+
+    '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEyVlaWx0_FK_sz86j-CnUC_pfEqw_Xq_xZUm5CMIyEI_-X2hRUpx1BHL"/>'+
+    '</div>'+
+    '<div class="text '+class2+' text'+class2+'" style ="width:160px">'+
+	'<audio controls autoplay><source src="'+msg+'" type="audio/mpeg"></audio>'+
+    '</div>'+
+  '</div>';
+	}
+	if(type=='video'){
+		 div = '<div class="Area" style="width:240px">'+
+    '<div class="'+class1+'">'+
+    '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEyVlaWx0_FK_sz86j-CnUC_pfEqw_Xq_xZUm5CMIyEI_-X2hRUpx1BHL"/>'+
+    '</div>'+
+    '<div class="text '+class2+' text'+class2+'" style ="width:160px">'+
+	'<video controls autoplay><source src="'+msg+'" type="audio/mpeg"></video>'+
+    '</div>'+
+  '</div>';
+	}	
+	if(type=='file'){
+		 div = '<div class="Area" style="width:240px">'+
+    '<div class="'+class1+'">'+
+    '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEyVlaWx0_FK_sz86j-CnUC_pfEqw_Xq_xZUm5CMIyEI_-X2hRUpx1BHL"/>'+
+    '</div>'+
+    '<div class="text '+class2+' text'+class2+'" style ="width:160px">'+
+	'<a href="'+msg.contents+'" ">'+msg.fname+'</a>'+
+    '</div>'+
+  '</div>';
+	}	
+   $('.container').append(div);
+	var objDiv = document.getElementById("chatarea");
+	objDiv.scrollTop = objDiv.scrollHeight;
+ }
+function send(){
+	if(registerFlag){
+			var t = $('.compose').val();
+	if(t.length > 0){
+			composeMessage('me',t,'text');
+			sendMessage('pushtoX',t,'text',to);
+			$('.compose').val('');
+	}
+	else
+	{
+	
+		 $('.compose').focus();
+	}
+
+	
+	
+	}
+}	
+	$('.compose').keypress(function(e){
+		if(e.which == 13) {
+			e.preventDefault();
+			
+			send();
+		}
+
+	});
+function register(){
+		var t = $('#MDN').val();
+		registerClient(t,'Nish');
+
+
+}
+$('#attachfiles').click(function(){
+			$('#imagefile').click();
+		
+		});
+		$('#imagefile').on('change', function(e){
+			
+			var file = e.originalEvent.target.files[0],
+			reader = new FileReader();
+			var read = new FileReader();
+
+			read.readAsDataURL(file);
+
+			read.onloadend = function(){
+				console.log(read.result);
+				var extension = e.originalEvent.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+			filename = file.name;
+			isSuccess = fileTypes.indexOf(extension) > -1;
+			isSuccessAudio = fileTypesAudio.indexOf(extension) > -1;
+			isSuccessVideo = fileTypesVideo.indexOf(extension) > -1;
+			console.log(isSuccess);
+			if(isSuccess){
+				console.log('Image uplaoded');
+				composeMessage('me', read.result,'image');			
+				sendMessage('pushtoX',read.result,'image',to);
+			}
+			else if(isSuccessAudio){
+				console.log('Audio uplaoded');
+				composeMessage('me', read.result,'audio');			
+				sendMessage('pushtoX',read.result,'audio',to);
+			}
+			else if(isSuccessVideo){
+				console.log('Video uplaoded');
+				composeMessage('me', read.result,'video');			
+				sendMessage('pushtoX',read.result,'video',to);
+			}
+			else{
+				console.log('File uplaoded');
+				message = {};
+				message.contents = read.result;
+				message.fname = filename;
+				composeMessage('me', message,'file');			
+				sendMessage('pushtoX',message,'file',to);
+			
+			}
+			}
+			//read.readAsBinaryString(file);
+			//When the file has been read...
+			console.log(file);
+			reader.onload = function(evt){
+			var extension = e.originalEvent.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+			filename = file.name;
+			isSuccess = fileTypes.indexOf(extension) > -1;
+			isSuccessAudio = fileTypesAudio.indexOf(extension) > -1;
+			isSuccessVideo = fileTypesVideo.indexOf(extension) > -1;
+			console.log(isSuccess);
+			if(isSuccess){
+				console.log('Image uplaoded');
+				showMessage("chatStarted");
+				sendMessage('pushtoX',evt.target.result,'image',mdn);
+				createChatMessage('showimage', fromMDN, evt.target.result, moment());			
+				scrollToBottom();
+			}
+			else if(isSuccessAudio){
+				console.log('Audio File uplaoded');
+				showMessage("chatStarted");
+				
+				createChatMessage('showaudio', fromMDN, evt.target.result, moment());
+				sendMessage('pushtoX',evt.target.result,'audio',mdn);
+				//socket.emit('user audio', {user: name, img: evt.target.result});
+				scrollToBottom();
+			}
+			else if(isSuccessVideo){
+				console.log('Video File uplaoded');
+				showMessage("chatStarted");
+				createChatMessage('showvideo', fromMDN, evt.target.result, moment());
+				sendMessage('pushtoX',evt.target.result,'video',mdn);
+				scrollToBottom();
+			}
+			else{
+				console.log('File uplaoded');
+				showMessage("chatStarted");
+				fname = file.name;
+				createChatMessage('showfile', fromMDN, evt.target.result, moment());
+				onReadAsData(evt.target.result,socket,file.name);
+				scrollToBottom();
+			}
+    };
+});
+</script>
+</body>
+
+</html>

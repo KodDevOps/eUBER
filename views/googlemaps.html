@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta charset="utf-8">
+    <style>
+		html {
+	height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+#map-canvas {
+	height: 100%;
+}
+#iw_container .iw_title {
+	font-size: 16px;
+	font-weight: bold;
+}
+.iw_content {
+	padding: 15px;
+}
+	
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>		
+	<script src="../js/webcam.js"></script>
+	<script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>	
+	<script src="../js/pushtox.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/api.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <script type="text/javascript">
+// *
+// * Add Info Window
+// * 2013 - en.marnoto.com
+// *
+
+// map center coordinates
+var ilhavo = new google.maps.LatLng(40.604036,-8.665247);
+
+// marker coordinates
+var museum = new google.maps.LatLng(40.604036,-8.665247);
+
+//Add this Function to pushtoX Receive Callback function
+function pushtoXfun(data){
+	console.log('PushtoX Data Arrived');
+	console.log(data);
+	var displayDiv = document.getElementById('display');
+	if(displayDiv!=null){
+		console.log('Div not null!!! Removing that');
+		displayDiv.parentNode.removeChild(displayDiv);
+	
+	}
+	if(data.type=="image"){
+		//hideDiv();
+		//loadContents();
+		var displayDiv = document.createElement('div');
+		displayDiv.setAttribute('id','display');
+		displayDiv.setAttribute('style','visibility:none;left:10%;width: 900px;height:900px;z-index: 9999;position:absolute;   top: 10%;');
+		document.body.appendChild(displayDiv);
+		
+		var displayImage = document.createElement('img');
+		displayImage.setAttribute('id','showImage');
+		if(displayImage!=null)
+			displayDiv.appendChild(displayImage);
+			
+		displayImage.src = data.msg;
+		displayDiv.style.visibility = "visible";
+		
+		console.log("Image file Receieved");
+		 
+	
+	}
+	else if(data.type=="video"){
+		//hideDiv();
+		//loadContents();
+		var displayDiv = document.createElement('div');
+		displayDiv.setAttribute('id','display');
+		displayDiv.setAttribute('style','visibility:none;left:10%;width: 900px;height:900px;z-index: 9999;position:absolute;   top: 10%;');
+		document.body.appendChild(displayDiv);
+		
+		var displayVideo = document.createElement('video');
+		displayVideo.setAttribute('autoplay','autoplay');
+		displayVideo.setAttribute('source',data.msg);
+		if(displayVideo!=null)
+			displayDiv.appendChild(displayVideo);
+			
+		displayVideo.src = data.msg;
+		displayDiv.style.visibility = "visible";
+
+		console.log("Video file Receieved");
+		displayDiv.style.visibility = "visible";
+	
+	}
+	else{
+	
+		console.log("Unknown file Receieved");
+	}
+}
+function uberFun(data){
+	if(data.type=='RequestDriverInfo'){
+		console.log('Uber Request Arrived');
+	}
+	console.log(data);
+	
+}
+makeConnection(pushtoXfun,'pushtoX');
+registerCallback(uberFun,'uber');
+
+//registerClient('3749','Nish','driver');
+//registerClient('37429','Nish');
+to = [];
+to.push('37429');
+//sendMessage('uber','accepted','accepted',to);
+function initialize() {
+  var mapOptions = {
+    center: ilhavo,
+    zoom: 18,
+    
+  };
+ var icon1 = new google.maps.MarkerImage(
+            "../img/rsz_marker.png"//, //url
+            //new google.maps.Size(80, 80)//, //size
+           // new google.maps.Point(0,0), //origin
+            //new google.maps.Point(anchor_left, anchor_top) //anchor 
+    );   
+  var map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
+
+  // variable to define the content of Info Window
+  
+
+  // creates the new Info Window with reference to the variable infowindow and establishes the content
+  var infowindow = new google.maps.InfoWindow({
+   // content: content
+  });
+   
+  // variable to define the options of the marker
+  var marker = new google.maps.Marker({
+    position: museum, // variable with the coordinates Lat and Lng
+    map: map,
+	draggable:true,
+    title:"Maritime Museum of Ílhavo",
+	icon:icon1
+  });
+	
+
+  // procedure to show the Info Window using a click on the marker
+  google.maps.event.addListener(marker, 'click', function() {
+  loadContents();
+  //var parentdiv = document.getElementById('parent');
+  //parentdiv.style.visibility = "visible";
+    //infowindow.open(map,marker); // map and marker are the variables defined previously
+	//loadContents();
+  });
+	
+  // event to close the infowindow with a click on the map
+  google.maps.event.addListener(map, 'click', function() {
+	//parentdiv.style.visibility = "hidden";
+		hideDiv();
+    //infowindow.close();
+  });
+ google.maps.event.addListener(map, 'dragend', function () {
+     
+
+     // We're out of bounds - Move the map back within the bounds
+
+     var c = map.getCenter();
+     console.log(c.lng());
+	 console.log(c.lat());
+	 var latlng = new google.maps.LatLng(c.lat(),c.lng());
+		marker.setPosition(latlng);
+ });  
+  
+}
+google.maps.event.addDomListener(window, 'load', initialize);	
+
+	
+	
+	
+	</script>
+  </head>
+  <body>
+    <div id="map-canvas"/>
+
+	</script>
+  </body>
+</html>

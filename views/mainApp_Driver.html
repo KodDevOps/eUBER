@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html>
+<title>uTalk </title>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+	    position: absolute;
+        width : 100%;
+		height: 100%;
+      }
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input-1 {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 20px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input-2 {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 40px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input-1:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+#srch {
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 250px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+#ride_Btn {
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 550px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+#driver_sel_Btn{
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 910px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+div#fixedheader {
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	color:#CCC;
+	background:#333;
+	padding:10px;
+}
+div#fixedfooter {
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	width:100%;
+	color:#CCC;
+	background:#333;
+	padding:8px;
+}
+
+.grey {
+		 position:absolute;       
+		 display: inline-block;	
+         margin-top:500px;		
+		opacity: 0.4;
+		filter: alpha(opacity=40);        
+		 z-index: 99;
+}
+
+
+.bright {
+
+		position:absolute;
+        
+		 display: inline-block;
+		
+         margin-top:500px;
+		 z-index: 99;
+    opacity: 3.0;
+    filter: alpha(opacity=100); /* For IE8 and earlier */
+}
+
+
+.caption {
+		position:absolute;   
+        margin-top:535px;
+		margin-left: 35px;        
+        display: inline-block;   
+		z-index: 99;
+}
+
+.popup_caption {
+		position:absolute;   
+        margin-top:435px;
+		margin-left: 20px;        
+        display: inline-block;   
+		z-index: 99;
+}
+
+.fig{
+	margin-left: 70px; 
+	background-color: #ffffff;
+	width: 80px	;
+	display: inline-block;
+}
+
+.driver_img{
+	margin-left: 70px; 
+	background-color: #ffffff;
+	width: 80px	;
+	display: inline-block;
+}
+
+
+a.selected {
+  background-color:#1F75CC;
+  color:white;
+  z-index:100;
+}
+
+.messagepop {
+  background-color:#FFFFFF;
+  border:1px solid #999999;
+  cursor:default;
+  display:none;
+  margin-top: 15px;
+  position:absolute;
+  margin-top:150px;
+  margin-left:900px; 
+  text-align:left;
+  width:394px;
+  z-index:50;
+  padding: 25px 25px 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 3px;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+
+.messagepop p, .messagepop.div .messagepop.button{
+  border-bottom: 1px solid #EFEFEF;
+  margin: 8px 0;
+  padding-bottom: 8px;
+}
+   	  
+    </style>
+    <style>
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fixedheader"><a href="http://localhost:8000/index.html" style="color:#ffffff">uTalk</a></div> 
+ 
+	
+	<button id="driver_sel_Btn" href="/ride_Select" style="background-color:#000000"> Driver Accept </button>
+	
+		
+	<div id="popup_passenger" class="messagepop pop">
+	<p id='pasngr_name'>Passenger Name	:</p>
+	<p id='pasngr_no'>Passenger Number	:</p>
+	<p id='pasngr_loc'>Passenger Location	:</p>
+	<p id='driver_name'>Accept Ride
+		<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+	</p>
+	<p id='driver_name'>Cancel Ride
+		<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+	</p>
+	<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+	<img src = "../img/camera.png" width="30" height="30" onclick="openpopup()"/>
+	
+	<a class="close" href="/">close</a>
+	</div>
+	
+	<div id="hiddenCamera">
+		<img src ="../img/camera.png" id = "opencam" height = 40 width=60 onclick="openCamera()"/>
+	</div>
+	<div id="popup_driver" class="messagepop pop">
+	<p id='driver_name'>Your Name:</p>
+	<p id='driver_no'>Number:</p>
+	<p id='ride'>Location:</p>
+	<p id='driver_img'>Image:
+		<img id="driver_img_src" src="" alt="Pasngr. Image" width="50px" height="50px"/>
+	</p>
+	<p id='driver_name'>Accept Ride:
+		<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+	</p>
+	<p id='driver_name'>Cancel Ride:
+		<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+	</p>
+	<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+	<a class="p2X" href="/">push to X</a>
+	<a class="close" href="/">close</a>
+	</div>
+	
+	
+	 <div id="popup" class="ol-popup">
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+	
+	<div id="map" ></div>
+	
+	
+	<div id="fixedfooter">DevOps</div>
+	
+	
+			
+	<div class="messagepop pop1">
+	</p>
+	
+	
+	
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../../js/api.js"></script>
+	<script type="text/javascript" src="./js/webcam.js"></script>
+		<div id = "dimScreen" style ="position:fixed"> 
+	<img src ="../img/close.png" height ="50" width="50" onClick ="closeCamera()">
+	</img>
+	<script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+	
+	<div id="my_camera"></div>
+	<div id="capture_button">
+			
+			<img src ="../img/capture.png" onClick="take_snapshot()" height= "60" width ="60" align="center"/>
+			<img src ="../img/videocapture.png" height = 40 width=60 id = "startrecording" onmousedown="startrecord()" onmouseup = "stoprecord()" align="center"//>
+	</div>	
+	</div>
+	<script language="JavaScript">
+var driverMDN = Number(window.location.pathname.match(/\/driver\/(\d+)$/)[1]);
+console.log("MDN PASSED IS:"+driverMDN);
+	$('#dimScreen').css('visibility', 'hidden');
+		function openCamera(){
+		
+		
+		if(registerFlag){
+		$('#opencam').css('visibility', 'hidden');
+						console.log('Opening Camera....');
+				var w = window.innerWidth;
+var h = window.innerHeight;
+			console.log(w);
+console.log(h);
+			
+		//alert(w);
+		//alert(h);
+
+		Webcam.set({
+			width: 320,
+			height: 240,
+			image_format: 'jpeg',
+			jpeg_quality: 90
+		});
+		Webcam.attach( '#dimScreen' );
+		$('#dimScreen').css('visibility', 'visible');
+		$('#capture_button').css('visibility', 'visible');
+			console.log('camera opened');
+		
+		}
+
+		}
+		var to = [];
+		
+				
+				to.push('4698038698');
+		
+	</script>
+<script>
+			function callback(data){
+								document.getElementById('results').innerHTML = 
+					'<h2>Here is your image:</h2>' + 
+					'<img id ="snapshot" src="'+data.msg+'"/>';
+					to = [];
+					console.log(data);
+					if(data.type =='video'){
+						document.querySelector("#mycam").src = data.msg;
+						console.log(data.msg);
+					}
+					to.push(data.fromMDN);
+					
+			
+			}
+			//makeConnection(callback,'pushtoX');
+
+	var delay=2000; //1 seconds
+
+		setTimeout(function(){
+		
+		openCamera();
+  
+		}, delay); 		
+
+function startrecord(){
+		
+			$('#startrecording').attr("src", "../img/video_started.png"); 
+			 navigator.getUserMedia({
+                        audio: true,
+						video:true,
+                    }, function(stream) {
+						//document.querySelector("#mycam").src = URL.createObjectURL(stream);
+                        recordAudio = RecordRTC(stream,{type: 'video'});
+                        recordAudio.startRecording();
+						//document.querySelector("#mycam").src = window.URL.createObjectURL(stream);
+						console.log('recording started....');
+                    }, function(error) {
+                        alert(JSON.stringify(error));
+                    });
+		}
+				function stoprecord(){
+						$('#startrecording').attr("src", "../img/videocapture.png"); 
+			                recordAudio.stopRecording(function() {
+							onStopRecording();
+							console.log('recording stopped');
+							//Function implementation is pending
+                });
+		}
+		 function onStopRecording() {
+					console.log('Stopped recording');
+                    recordAudio.getDataURL(function(audioDataURL) {
+						
+					//document.querySelector("#mycam").src = audioDataURL;
+					sendMessage('pushtoX',audioDataURL,'video',to)	
+                        console.log(audioDataURL);
+                    });
+                }			
+				//registerClient('4698038689','Nish');
+				
+	</script>
+	
+    <script> 
+
+
+//$('hiddenCamera').css('visibility', 'hidden');
+function openpopup(){
+$('hiddenCamera').css('visibility', 'visible');
+				$('#popup_passenger').load('../html/sample.html');
+				//document.getElementById('popup_passenger').innerHTML = document.getElementById('hiddenCamera').innerHTML;
+				
+								var infowindow = new google.maps.InfoWindow({
+				content: document.getElementById('popup_passenger').innerHTML});
+								
+				infowindow.open(map,maker_List[selected_pass_uuid]);
+
+}
+
+	function take_snapshot() {
+			// take snapshot and get image data
+			Webcam.snap( function(data_uri) {
+				// display results in page
+
+				sendMessage('pushtoX',data_uri,'image',to)	
+					
+			} );
+		}
+
+
+// This example adds a search box to a map, using the Google Place Autocomplete
+// feature. People can enter geographical searches. The search box will return a
+// pick list containing a mix of places and predicted search terms.
+
+//var bearer_Token = getUrlVars()["access_code"];
+var bearer_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsicHJvZmlsZSIsImhpc3RvcnlfbGl0ZSIsImhpc3RvcnkiLCJyZXF1ZXN0Il0sInN1YiI6IjkwMDU4YjM1LWJkN2MtNGNiMy1iN2RiLWIzMTQzZThkNWNiNCIsImlzcyI6InViZXItdXMxIiwianRpIjoiZDNmYTQxZTUtZmJjNS00ZmYzLTgxOWYtZmJkYmE0MzA4ODM4IiwiZXhwIjoxNDUzNDk0MzIwLCJpYXQiOjE0NTA5MDIzMjAsInVhY3QiOiJsQVZkNmlqY0Y2UnM1RUdCOUV6UEpDNGI0ejRiazAiLCJuYmYiOjE0NTA5MDIyMzAsImF1ZCI6IjVJZEtVRWZqVG9XUklReDN2OTNOUFpoYjljRmNBMEdrIn0.Qk6zQkBvzR40LMUc3xZ92w6Jmkode21xY-04jE5gnvtPzXXpm5FdBMcvCidtuRXt63lTNExmQt0pd3_h-94E8JE3J9O_lQUUwsRb9y9scQKcyo-3YUohPKSL7xn8WJRYu78_PXSifcijZOHVXN-04LwieCZRHK0EUP4UQOqHDKo3YWvgp771tQvyN8fBhxz9hW0m6LtG0rUHFiPrdGNVnrLyjGfIF_TxpPiC123ILI4haCMfZkSv78NB_bhYqPi9atemMHw_oez7bvaKKridK0-PSJRu9NWTmPMIaHVmlbEy1RojfFj9VwdVB-fBRA9TaqAmCDq4zO3bbU0Kp82flw';
+var User_no=driverMDN; 
+
+var from_Lat="", from_Long="", to_Lat="", to_Long=""; 
+var prod_List = new Array(); 
+var driver_details; 
+var selected_pass_uuid, selected_pass_Name, selected_pass_Location, selected_pass_No; 
+var product_Image={}; 
+var map, source_place;
+var selected_req_id; 
+var pass_Details= {}; 
+
+var maker_List= {}; 
+
+
+function receive_CallBacks(data)
+{
+		console.log(' RECEIVED MSG	:' + data);
+		
+		if(data.module=='uber')
+		{
+			if (confirm('Ride Request Arrived'))
+			{
+				console.log(data.msg.split('$')[0]);
+				console.log(data.msg.split('$')[1]);
+				console.log(data.msg.split('$')[2]);
+				console.log(data.msg.split('$')[3]);
+				console.log(data.msg.split('$')[4]);
+				
+				to = [];
+				to.push(data.fromMDN);
+				
+				
+				pass_Details[data.msg.split('$')[0]] = {location : data.msg.split('$')[1], name: data.msg.split('$')[2], number: data.fromMDN, req_id:data.msg.split('$')[4]}; 
+				set_user_location(data.msg.split('$')[0], data.msg.split('$')[1], data.msg.split('$')[2]);
+			}
+			
+		}
+}
+
+makeConnection(receive_CallBacks, 'uber'); 
+
+var delay=1000; //1 seconds
+function pushtoXCallback(data){
+	console.log(' RECEIVED MSG	:' + JSON.stringify(data));
+}
+setTimeout(function(){
+
+		registerClient(User_no,"Mourya Gudladona","driver");
+		setTimeout(registerCallback(pushtoXCallback, 'pushtoX'), 500);
+		 
+  
+}, delay); 
+
+
+
+
+
+get_User_details();
+
+
+connect_for_chat(); 
+
+
+				function deselect(e) {
+				$('.pop').slideFadeToggle(function() {
+					e.removeClass('selected');
+				});    
+				}
+				
+				$(function() {
+				$('#ride_Btn').on('click', function() {
+					if($(this).hasClass('selected')) {
+					deselect($(this));               
+					} else {
+					$(this).addClass('selected');
+					$('.pop').slideFadeToggle();
+					}
+					return false;
+				});
+				
+				$('.close').on('click', function() {
+					deselect($('#ride_Btn '));
+					return false;
+				});
+				});
+				
+				$.fn.slideFadeToggle = function(easing, callback) {
+				return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+				};
+
+				//**********************************
+				
+				function deselect(e) {
+				$('.pop1').slideFadeToggle(function() {
+					e.removeClass('selected');
+				});    
+				}
+				
+				$(function() {
+				$('#driver_sel_Btn').on('click', function() {
+					if($(this).hasClass('selected')) {
+					deselect($(this));               
+					} else {
+					$(this).addClass('selected');
+					$('.pop1').slideFadeToggle();
+					}
+					return false;
+				});
+				
+				$('.close').on('click', function() {
+					deselect($('#driver_sel_Btn'));
+					return false;
+				});
+				});
+				
+				$.fn.slideFadeToggle = function(easing, callback) {
+				return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+				};
+
+			//**********************************
+
+function set_user_location(user_uuid, user_location, user_name)
+{
+
+	var geocoder = new google.maps.Geocoder();
+	var address = user_location;
+
+	geocoder.geocode( { 'address': address}, function(results, status) {
+
+	if (status == google.maps.GeocoderStatus.OK) {
+		var latitude = results[0].geometry.location.lat();
+		var longitude = results[0].geometry.location.lng();
+		//alert(latitude);
+		
+			var userLatLng = new google.maps.LatLng(latitude, longitude);
+			// Do whatever you want with userLatLng.
+			var marker = new google.maps.Marker({
+			position: userLatLng,
+			title: user_uuid,
+			map: map,
+			icon: 'images/Pin.png',
+			opacity: 0.5
+    });
+	
+		marker.setMap(map);
+		
+		maker_List[user_uuid] = marker; 
+				
+	
+			google.maps.event.addListener(marker,'click', function() {
+				selected_pass_uuid 		= marker.title; 
+				selected_pass_Location	= pass_Details[selected_pass_uuid].location; 
+				selected_pass_Name 		= pass_Details[selected_pass_uuid].name; 
+				selected_pass_No		= pass_Details[selected_pass_uuid].number; 
+				selected_req_id			= pass_Details[selected_pass_uuid].req_id;
+				
+				console.log(selected_pass_uuid 		);
+				console.log(selected_pass_Location	);
+				console.log(selected_pass_Name 		);
+				console.log(selected_pass_No		);
+				console.log(selected_req_id		);
+				
+				
+				document.getElementById("pasngr_name").innerHTML = "Passenger Name	:" + selected_pass_Name; 
+				document.getElementById("pasngr_no").innerHTML = "Passenger Number	:" + selected_pass_No; 
+				document.getElementById("pasngr_loc").innerHTML = "Passenger Location	:" + selected_pass_Location; 
+			
+				to = [];
+				to.push(selected_pass_No);
+
+
+				var infowindow = new google.maps.InfoWindow({
+				content: document.getElementById('popup_passenger').innerHTML});
+								
+				infowindow.open(map,marker);
+			
+			});
+			
+	} 
+	});
+
+
+
+}
+
+
+
+
+function get_User_details()
+{		
+	
+}
+
+
+function connect_for_chat()
+{
+	
+	
+
+}
+			
+function getProducts() {
+
+}
+
+function loadDesc(selectedProd)
+{
+	  
+}
+
+function wait_for_driver(id)
+{
+		if(id=='accept')
+		{
+		 //$('#accept').disable(true);
+		 //$("#driver_name").prop('disabled', true);
+		 $("#driver_name").html("Accepted");
+		 console.log('Driver Accepted');
+		 setStatus('InRide');
+		 $.ajax({	 
+					type: "PUT",						
+					contentType: 'application/json',						
+					url: "https://sandbox-api.uber.com/v1/sandbox/requests/"+ pass_Details[selected_pass_uuid].req_id,
+						
+						headers: { 	
+						Authorization: "Bearer " + bearer_Token
+					},
+					
+					data: JSON.stringify({"status" : "accepted"}),
+					
+					success: function(result) {
+						
+						console.log('Request update sent...');	
+						
+						var to=[];
+						to.push(selected_pass_No);
+						
+						sendMessage('uber', 'Check_Req_id_status'+'$'+ pass_Details[selected_pass_uuid].req_id + '$'+'accepted', 'accepted', to);
+					}
+			});
+			
+			}
+			
+			if(id=='cancel')
+			{
+				
+			}
+}
+
+function request_Status(req_status, req_id)
+{
+	
+}
+
+function pole_status(req_id)
+{		
+
+}
+
+
+
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+	vars[key] = value;
+	});
+	return vars;
+	}
+
+	
+
+function initAutocomplete() {
+
+	map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 33.013087, lng: -96.691817},
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  
+  
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+	
+
+	function setPosition(position) {
+	
+	var latLong = [];
+	
+	var userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	latLong.push(position.coords.latitude);
+	latLong.push( position.coords.longitude);
+	
+    // Do whatever you want with userLatLng.
+	console.log(latLong);
+    var marker = new google.maps.Marker({
+        position: userLatLng,
+        title: 'Your Location',
+        map: map,
+		icon: 'images/Pin.png',
+		opacity: 0.5
+    });
+	
+		marker.setMap(map);
+			
+		
+var infowindow = new google.maps.InfoWindow({
+  content: '<h1> Your Location </h1>'
+});
+  
+  	google.maps.event.addListener(marker,'click', function() {
+				
+				infowindow.open(map,marker);
+			
+			});
+			
+			
+			
+
+	}
+
+}
+    </script>
+	
+	
+	
+	
+	
+	
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZGkEKqXuwaPk-6k5xAZynRjIYZHK7Pjs&libraries=places&callback=initAutocomplete"
+         async defer></script>
+<script>
+	function setStatus(status){
+		sendMessage('uber',status,'UpdateStatus',to);	
+	}
+
+</script>		 
+		 
+		 
+		 
+		 
+  </body>
+</html>

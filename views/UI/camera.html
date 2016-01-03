@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>camera | Camera</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link href="../ui/css/styles_camera.css" rel="stylesheet">
+
+  <script src="../ui/js/scripts_camera.js"></script>
+	
+  <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+  
+</head>
+<body>
+
+  <div data-role="page" data-control-title="camera" data-theme="a" id="page2">
+     
+  </div>
+ <script src="../js/webcam.js"></script>  
+ <script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+ <script src="../js/openCamera.js"></script>  
+ <script src ="http://html5-demos.appspot.com/static/getusermedia/whammy.min.js"></script>
+  <script>
+  
+		
+	OpenCamera('page2','camera');
+	//swapCamera(true);
+  </script> 
+<video id="myvideo">
+
+</video>  
+</body>
+</html>

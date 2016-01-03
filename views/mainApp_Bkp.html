@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+<title>uTalk </title>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+	    position: absolute;
+        width : 100%;
+		height: 100%;
+      }
+.controls {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 32px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input-1 {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 20px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input-2 {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 40px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 300px;
+}
+
+#pac-input-1:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+#srch {
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 250px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+#ride_Btn {
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 550px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+#driver_sel_Btn{
+		 position:absolute;
+         border-radius: 15px;
+		 color: #fff;
+         background-color: #000000; 
+         font-family: Roboto;
+         font-size: 15px;
+         font-weight: 300;
+         margin-top:600px;
+         margin-left: 910px;
+         padding: 0 11px 0 13px;
+         text-overflow: ellipsis;
+         width: 300px;
+         padding: 11px;
+		 z-index: 99;
+}
+
+div#fixedheader {
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	color:#CCC;
+	background:#333;
+	padding:10px;
+}
+div#fixedfooter {
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	width:100%;
+	color:#CCC;
+	background:#333;
+	padding:8px;
+}
+
+.grey {
+		 position:absolute;       
+		 display: inline-block;	
+         margin-top:500px;		
+		opacity: 0.4;
+		filter: alpha(opacity=40);        
+		 z-index: 99;
+}
+
+
+.bright {
+
+		position:absolute;
+        
+		 display: inline-block;
+		
+         margin-top:500px;
+		 z-index: 99;
+    opacity: 3.0;
+    filter: alpha(opacity=100); /* For IE8 and earlier */
+}
+
+.popup {
+
+		position:absolute;
+        
+		display: inline-block;
+		
+        margin-top:400px;
+		z-index: 99;
+		opacity: 3.0;
+		filter: alpha(opacity=100); /* For IE8 and earlier */
+}
+
+.caption {
+		position:absolute;   
+        margin-top:535px;
+		margin-left: 35px;        
+        display: inline-block;   
+		z-index: 99;
+}
+
+.popup_caption {
+		position:absolute;   
+        margin-top:435px;
+		margin-left: 20px;        
+        display: inline-block;   
+		z-index: 99;
+}
+
+.fig{
+	margin-left: 70px; 
+	background-color: #ffffff;
+	width: 80px	;
+	display: inline-block;
+}
+
+.driver_img{
+	margin-left: 70px; 
+	background-color: #ffffff;
+	width: 80px	;
+	display: inline-block;
+}
+
+
+a.selected {
+  background-color:#1F75CC;
+  color:white;
+  z-index:100;
+}
+
+.messagepop {
+  background-color:#FFFFFF;
+  border:1px solid #999999;
+  cursor:default;
+  display:none;
+  margin-top: 15px;
+  position:absolute;
+  margin-top:150px;
+  margin-left:900px; 
+  text-align:left;
+  width:394px;
+  z-index:50;
+  padding: 25px 25px 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 3px;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+
+.messagepop p, .messagepop.div .messagepop.button{
+  border-bottom: 1px solid #EFEFEF;
+  margin: 8px 0;
+  padding-bottom: 8px;
+}
+
+    </style>
+    <style>
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fixedheader"><a href="http://localhost:8000/index.html" style="color:#ffffff">uTalk</a></div> 
+   
+	
+	<input id="pac-input-1" class="controls" type="text" placeholder="Enter Your Location">
+	<input id="pac-input-2" class="controls" type="text" placeholder="To">
+    <button id="srch" onClick="getProducts()"> Search </button>
+	<button id="ride_Btn" href="/contact" disabled style="background-color:#E8E8E8"> Ride Details </button>
+	<button id="driver_sel_Btn" href="/ride_Select" style="background-color:#000000"> Driver Accept </button>
+	
+	<figure class='fig'>
+	<img href="/contact" class='grey' id="uberX"    src="images/uberX.png" onclick='loadDesc(this.id)'/>  
+	<figcaption class = 'caption'>X</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+	<img href="/contact" class='grey' id="uberXL"   src="images/uberXL.png" onclick='loadDesc(this.id)'/>  
+	<figcaption class = 'caption'>XL</figcaption>
+	</figure>
+	
+	<figure class='fig'>	
+	<img href="/contact" class='grey' id="UberSUV"  src="images/UberSUV.png" onclick='loadDesc(this.id)'/> 
+	<figcaption class = 'caption'>SUV</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+	<img href="/contact" class='grey' id="UberBLACK"src="images/UberBLACK.png" onclick='loadDesc(this.id)'/> 
+	<figcaption class = 'caption'>Black</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+	<img href="/contact" class='grey' id="uberSELECT" src="images/uberSELECT.png" onclick='loadDesc(this.id)'/> 
+	<figcaption class = 'caption'>Select</figcaption>
+	</figure>
+	
+	<div class="messagepop pop">
+	<p id='driver_name'>Driver:</p>
+	<p id='driver_no'>Number:</p>
+	<p id='ride'>Ride:</p>
+	<p id='driver_img'>Image:
+		<img id="driver_img_src" src="" alt="Driver Image" width="50px" height="50px"/>
+	</p>
+	<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+	<a class="p2X" href="/">push to X</a>
+	<a class="close" href="/">close</a>
+	</div>
+	<div id="map" ></div>
+	<div id="fixedfooter">DevOps</div>
+	
+	
+			
+	<div class="messagepop pop1">
+	<p id='pass_Location'>Passenger Location:</p>
+	<p id='driver_name'>Accept Ride:
+		<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+	</p>
+	<p id='driver_name'>Cancel Ride:
+		<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+	</p>
+	
+	
+	
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> </script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/api.js"></script>
+	
+    <script>
+// This example adds a search box to a map, using the Google Place Autocomplete
+// feature. People can enter geographical searches. The search box will return a
+// pick list containing a mix of places and predicted search terms.
+
+//var bearer_Token = getUrlVars()["access_code"];
+var bearer_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsicHJvZmlsZSIsImhpc3RvcnlfbGl0ZSIsImhpc3RvcnkiLCJyZXF1ZXN0Il0sInN1YiI6IjkwMDU4YjM1LWJkN2MtNGNiMy1iN2RiLWIzMTQzZThkNWNiNCIsImlzcyI6InViZXItdXMxIiwianRpIjoiZDNmYTQxZTUtZmJjNS00ZmYzLTgxOWYtZmJkYmE0MzA4ODM4IiwiZXhwIjoxNDUzNDk0MzIwLCJpYXQiOjE0NTA5MDIzMjAsInVhY3QiOiJsQVZkNmlqY0Y2UnM1RUdCOUV6UEpDNGI0ejRiazAiLCJuYmYiOjE0NTA5MDIyMzAsImF1ZCI6IjVJZEtVRWZqVG9XUklReDN2OTNOUFpoYjljRmNBMEdrIn0.Qk6zQkBvzR40LMUc3xZ92w6Jmkode21xY-04jE5gnvtPzXXpm5FdBMcvCidtuRXt63lTNExmQt0pd3_h-94E8JE3J9O_lQUUwsRb9y9scQKcyo-3YUohPKSL7xn8WJRYu78_PXSifcijZOHVXN-04LwieCZRHK0EUP4UQOqHDKo3YWvgp771tQvyN8fBhxz9hW0m6LtG0rUHFiPrdGNVnrLyjGfIF_TxpPiC123ILI4haCMfZkSv78NB_bhYqPi9atemMHw_oez7bvaKKridK0-PSJRu9NWTmPMIaHVmlbEy1RojfFj9VwdVB-fBRA9TaqAmCDq4zO3bbU0Kp82flw';
+var User_no; 
+
+var from_Lat="", from_Long="", to_Lat="", to_Long=""; 
+var prod_List = new Array(); 
+var driver_details; 
+var selected_model, selected_desc, selected_capacity, selected_prod_id; 
+var product_Image={}; 
+var map, source_place;
+var selected_req_id; 
+
+
+
+function receive_CallBacks(data)
+{
+		console.log(' RECEIVED MSG	:' + data);
+}
+
+makeConnection(receive_CallBacks, 'uber'); 
+
+get_User_details();
+
+
+connect_for_chat(); 
+
+
+				function deselect(e) {
+				$('.pop').slideFadeToggle(function() {
+					e.removeClass('selected');
+				});    
+				}
+				
+				$(function() {
+				$('#ride_Btn').on('click', function() {
+					if($(this).hasClass('selected')) {
+					deselect($(this));               
+					} else {
+					$(this).addClass('selected');
+					$('.pop').slideFadeToggle();
+					}
+					return false;
+				});
+				
+				$('.close').on('click', function() {
+					deselect($('#ride_Btn '));
+					return false;
+				});
+				});
+				
+				$.fn.slideFadeToggle = function(easing, callback) {
+				return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+				};
+
+				//**********************************
+				
+				function deselect(e) {
+				$('.pop1').slideFadeToggle(function() {
+					e.removeClass('selected');
+				});    
+				}
+				
+				$(function() {
+				$('#driver_sel_Btn').on('click', function() {
+					if($(this).hasClass('selected')) {
+					deselect($(this));               
+					} else {
+					$(this).addClass('selected');
+					$('.pop1').slideFadeToggle();
+					}
+					return false;
+				});
+				
+				$('.close').on('click', function() {
+					deselect($('#driver_sel_Btn'));
+					return false;
+				});
+				});
+				
+				$.fn.slideFadeToggle = function(easing, callback) {
+				return this.animate({ opacity: 'toggle', height: 'toggle' }, 'fast', easing, callback);
+				};
+
+			//**********************************
+
+function get_User_details()
+{		
+			$.ajax({
+			
+			type 	: 'GET',
+			//contentType: 'application/json',
+			//url		: 'https://login.uber.com/oauth/v2/token?client_secret=' + my_secret + '&client_id=' + my_cli_id + '&grant_type=authorization_code' + '&redirect_uri=https://45.33.29.206:8000/load.html' + '&code=' + recvd_auth_code,
+			url		: 'https://sandbox-api.uber.com/v1/me',
+			//url		: 'https://login.uber.com/oauth/v2/token?client_secret=' + my_secret + '&client_id=' + my_cli_id + '&grant_type=authorization_code' + '&redirect_uri=https://wcsr.ms1b.kodiakgw.com/UberApp/load.html' + '&code=' + recvd_auth_code,
+			//dataType: 'text',
+			headers: {
+				Authorization: "Bearer " + bearer_Token
+			},
+					
+			success: function(result)
+			{
+				console.log('UUID		: ' + result.uuid);	
+				console.log('PICTURE 	:'	+ result.picture);	
+				console.log('FIRST Name	:'	+ result.first_name);	
+				console.log('LAST NAME	:'	+ result.last_name);
+				console.log('E-MAIL		:'	+ result.email);				
+				User_no = result.uuid.replace(/[^0-9]/g, '').substring(0,10);
+				console.log('PHONE		:'	+ User_no);
+				
+				registerClient(User_no,result.first_name + ' ' + result.last_name);
+			}
+	})
+	
+}
+
+
+function connect_for_chat()
+{
+	
+	
+
+}
+			
+function getProducts() {
+
+	var userLatLng = new google.maps.LatLng(from_Lat, from_Long);
+	
+	var bounds = new google.maps.LatLngBounds();
+	bounds.extend(userLatLng);
+	map.fitBounds(bounds);
+	map.setZoom(17);
+
+	  
+		
+  $.ajax({
+    url: "https://sandbox-api.uber.com/v1/products?latitude=" + from_Lat + "&" + "longitude=" + from_Long,
+    headers: {
+    	Authorization: "Bearer " + bearer_Token
+    },
+    success: function(result) {
+		
+		console.log(result);	
+		
+		for(i=0; i< result.products.length ; i++)
+			{
+				//images.push(result.products[i].image);
+				console.log(result.products[i].display_name);	
+				document.getElementById(result.products[i].display_name).src = result.products[i].image;
+				document.getElementById(result.products[i].display_name).className = "bright"; 
+				product_Image[result.products[i].display_name] = result.products[i].image; 
+				
+				prod_List[result.products[i].display_name] =  result.products[i]; 
+				//console.log(prod_List[result.products[i].display_name]); 
+			}
+    }
+  });
+}
+
+function loadDesc(selectedProd)
+{
+	
+	if (confirm('Confirm '+ prod_List[selectedProd].display_name + '?')) {
+		
+	document.getElementById("driver_name").innerHTML = "Driver	:";
+	document.getElementById("ride").innerHTML = "Ride	:"	;
+	document.getElementById("driver_no").innerHTML = "Number	:";
+	document.getElementById("driver_img").src = "";	
+		
+	selected_model = prod_List[selectedProd].display_name;  
+	selected_desc = prod_List[selectedProd].description; 
+	selected_capacity = prod_List[selectedProd].capacity; 
+	selected_prod_id = prod_List[selectedProd].product_id; 
+	
+	var desc_Str = "<br />" + "MODEL 	: " + selected_model + "<br />" + "DESCRIPTION 	: " + selected_desc + "<br />" + "CAPACITY 	: " + selected_capacity + "<br />" + "PRODUCT_ID 	: " + selected_prod_id ; 
+	
+	//'{"start_latitude":"32.987646","start_longitude":"-96.772997","end_latitude":"33.013087","end_longitude":"-96.691817","product_id":"1de215a3-4506-44cd-a59f-83420818e992"}'
+	
+	console.log(desc_Str);
+	
+	 $.ajax({
+	 
+    type: "POST",
+	contentType: 'application/json',
+    url: "https://sandbox-api.uber.com/v1/requests",
+	
+	data: JSON.stringify({"start_latitude" : (from_Lat), "start_longitude" : (from_Long) , "end_latitude" : (to_Lat) , "end_longitude" : (to_Long) , "product_id" : selected_prod_id}),
+	headers: { 	
+    	Authorization: "Bearer " + bearer_Token
+    },
+    success: function(result) {
+		
+		console.log(result);
+		selected_req_id =  result.request_id;
+		request_Status(result, result.request_id);
+		
+    }
+  });
+  
+} else {
+    alert(prod_List[selectedProd].display_name + ' Cancelled');
+}
+
+  
+  
+}
+
+function wait_for_driver(id)
+{
+		if(id=='accept')
+		{
+		 console.log('Driver Accepted');
+		 $.ajax({	 
+					type: "PUT",						
+					contentType: 'application/json',						
+					url: "https://sandbox-api.uber.com/v1/sandbox/requests/"+ selected_req_id,
+						
+						headers: { 	
+						Authorization: "Bearer " + bearer_Token
+					},
+					
+					data: JSON.stringify({"status" : "accepted"}),
+					
+					success: function(result) {
+						
+						console.log('Request update sent...');	
+						pole_status(selected_req_id);
+					}
+			});
+			
+			}
+			
+			if(id=='cancel')
+			{
+				
+			}
+}
+
+function request_Status(req_status, req_id)
+{
+	
+	console.log('Request status : '+ req_status.status);
+	req_status.status="processing"; 
+	if(req_status.status=='processing')
+	{
+	
+		document.getElementById(selected_model).src="images/uber_processing.gif";
+		alert(' Waiting for Driver '); 
+
+		//4698038689
+		var to=[]; 
+		to.push('4698038689');
+		
+		sendMessage('uber', req_status.request_id+'$'+document.getElementById('pac-input-1').value+'$', 'text', to);
+		
+		return;
+	}
+	
+	if(req_status.status=='accepted')
+	{
+		document.getElementById(selected_model).src = product_Image[selected_model]; 
+		console.log(req_status); 
+		console.log('Driver Accepted == Name : ' + req_status.driver.name + " Number : " + req_status.driver.phone_number + " Location : " + req_status.location); 
+		
+		$('#ride_Btn').removeAttr('disabled');
+		document.getElementById("driver_img_src").src = req_status.driver.picture_url;
+		$('#ride_Btn').css('background-color', 'black');
+		document.getElementById("driver_name").innerHTML = document.getElementById("driver_name").innerHTML + "	" + req_status.driver.name;
+		document.getElementById("ride").innerHTML = document.getElementById("ride").innerHTML + "	" + selected_model;		
+		document.getElementById("driver_no").innerHTML = document.getElementById("driver_no").innerHTML + "	" + req_status.driver.phone_number;
+		
+                
+	            var userLatLng = new google.maps.LatLng(req_status.location.latitude, req_status.location.longitude);
+                // Do whatever you want with userLatLng.
+                var marker = new google.maps.Marker({
+                    position: userLatLng,
+                    title: 'Driver Location',
+                    map: map,
+					icon: 'images/'+selected_model+'_small.png'
+                });
+	            
+	            marker.setMap(map);
+	
+	
+		return;
+	}
+}
+
+function pole_status(req_id)
+{		
+			{
+		
+				$.ajax({
+					type: "GET",
+					contentType: 'application/json',
+			    	url: "https://sandbox-api.uber.com/v1/requests/"+ req_id,
+		
+					headers: { 	
+						Authorization: "Bearer " + bearer_Token
+					},
+							
+					success: function(result) {
+						
+						console.log(' Request status : ' + result);
+						if(result.status=='accepted')
+							{
+								document.getElementById(selected_model).src = product_Image[selected_model];
+								console.log('Driver Accepted == Name : ' + result.driver.name + " Number : " + result.driver.phone_number + " Location : " + result.location); 
+								
+								$('#ride_Btn').removeAttr('disabled');
+		                        document.getElementById("driver_img_src").src = result.driver.picture_url;
+		                        $('#ride_Btn').css('background-color', 'black');
+								document.getElementById("driver_name").innerHTML = document.getElementById("driver_name").innerHTML + "	" + result.driver.name; 
+								document.getElementById("driver_no").innerHTML = document.getElementById("driver_no").innerHTML + "	" + result.driver.phone_number;
+								document.getElementById("ride").innerHTML = document.getElementById("ride").innerHTML + "	" + selected_model;	
+								
+								 var userLatLng = new google.maps.LatLng(result.location.latitude, result.location.longitude);
+                                 // Do whatever you want with userLatLng.
+                                 var marker = new google.maps.Marker({
+                                     position: userLatLng,
+                                     title: 'Driver Location',
+                                     map: map,
+				                 	icon: 'images/'+selected_model+'_small.png'
+                                 });
+	                             
+	                             marker.setMap(map);
+				
+							    return;
+							}
+						else
+							pole_status(req_id); 
+										
+					}
+				});
+		
+			}
+		
+		
+
+}
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+	vars[key] = value;
+	});
+	return vars;
+	}
+	
+	
+function initAutocomplete() {
+
+	map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 33.013087, lng: -96.691817},
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  
+  
+	if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+	
+
+	function setPosition(position) {
+	
+	var userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    // Do whatever you want with userLatLng.
+    var marker = new google.maps.Marker({
+        position: userLatLng,
+        title: 'Your Location',
+        map: map,
+		icon: 'images/Pin.png',
+		opacity: 0.5
+    });
+	
+		marker.setMap(map);
+	}
+
+
+  // Create the search box and link it to the UI element.
+  var input_1 = document.getElementById('pac-input-1');
+  var input_2 = document.getElementById('pac-input-2');
+  var searchBox_1 = new google.maps.places.SearchBox(input_1);
+  var searchBox_2 = new google.maps.places.SearchBox(input_2);
+  
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input_1);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input_2);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox_1.setBounds(map.getBounds());
+  });
+
+    map.addListener('bounds_changed', function() {
+    searchBox_2.setBounds(map.getBounds());
+  });
+  
+  var markers = [];
+  // [START region_getplaces]
+  // Listen for the event fired when the user selects a prediction and retrieve
+  // more details for that place.
+  searchBox_1.addListener('places_changed', function() {
+    var places = searchBox_1.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    // Clear out the old markers.
+    markers.forEach(function(marker) {
+      marker.setMap(null);
+    });
+    markers = [];
+
+    // For each place, get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+
+      // Create a marker for each place.
+      var marker = new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+		zoom: 9,
+        position: place.geometry.location,
+		icon: 'images/Pin.png',
+		opacity: 0.3
+      });
+	  
+	  from_Lat = place.geometry.location.lat(); 
+	  from_Long = place.geometry.location.lng(); 
+	  
+	  console.log(from_Lat + " " + from_Long );
+	  
+	  markers.push(marker);
+
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+	map.setZoom(17);
+  });
+  
+  
+  
+  
+  searchBox_2.addListener('places_changed', function() {
+    var places = searchBox_2.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+
+    // For each place, get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
+
+      // Create a marker for each place.
+      var marker = new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+		zoom: 9,
+        position: place.geometry.location,
+		icon: 'images/Pin.png',
+		opacity: 0.3
+      });
+	  
+	  to_Lat = place.geometry.location.lat(); 
+	  to_Long = place.geometry.location.lng(); 
+	  
+	  console.log(to_Lat + " " + to_Long );
+	  
+	  
+	  markers.push(marker);
+
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+	map.setZoom(17);
+  });
+  // [END region_getplaces]
+}
+    </script>
+	
+	
+	
+	
+	
+	
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZGkEKqXuwaPk-6k5xAZynRjIYZHK7Pjs&libraries=places&callback=initAutocomplete"
+         async defer></script>
+		 
+		 
+		 
+		 
+		 
+  </body>
+</html>

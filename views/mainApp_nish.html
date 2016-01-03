@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<title>uTalk</title>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+    <!--<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />-->
+    <link rel="stylesheet" type="text/css" href="../../css/uber.css">
+    
+
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>-->
+	
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="../../js/webcam.js"></script>
+    <script src="../../js/pushtox.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/uber.js"></script>
+    <script src="../../js/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZGkEKqXuwaPk-6k5xAZynRjIYZHK7Pjs&libraries=places&callback=initAutocomplete" async defer></script>
+
+
+  </head>
+  <body>
+	<!-- check with Mourya -->
+    	<!--<div id="fixedheader">
+		<a href="http://localhost:8000/index.html" style="color:#ffffff">uTalk</a>
+	</div>-->
+	<script>
+		loadRiderDriverDetails();
+		openCamera();
+	</script>
+	
+	<!--<div id="screen" style="position:fixed"></div>-->
+
+	<div id="search-control">
+		<input type='text' placeholder='Search...' id='search-text-input' />
+		<div id='button-holder'>
+			<img src='../images/icon_magnify_glass.png' onClick="getProducts()"/>
+			<img src='../images/split-arrow.png' onClick="getProducts()"/>
+		</div>
+	</div>	
+
+
+	<!--<input  id="pac-input-1" class="controls" type="text" placeholder="Enter Your Location">-->
+	<input  id="pac-input-2" class="controls" type="text" placeholder="To"/>
+
+	<!--<div id="uberFunction">
+    		<button id="srch" class="table-thead" onClick="getProducts()"> Search </button>
+		<button id="ride_Btn" class="table-thead" href="/contact" disabled> Ride Details </button>
+		<button id="driver_sel_Btn" class="table-thead" href="/ride_Select"> Driver Accept </button>
+	</div>-->
+	
+	<!--<figure class='fig'>
+		<img href="/contact" class='grey' id="uberX"    src="images/uberX.png" onclick='loadDesc(this.id)'/>  
+		<figcaption class = 'caption'>X</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+		<img href="/contact" class='grey' id="uberXL"   src="images/uberXL.png" onclick='loadDesc(this.id)'/>  
+		<figcaption class = 'caption'>XL</figcaption>
+	</figure>
+	
+	<figure class='fig'>	
+		<img href="/contact" class='grey' id="UberSUV"  src="images/UberSUV.png" onclick='loadDesc(this.id)'/> 
+		<figcaption class = 'caption'>SUV</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+		<img href="/contact" class='grey' id="UberBLACK"src="images/UberBLACK.png" onclick='loadDesc(this.id)'/> 
+		<figcaption class = 'caption'>Black</figcaption>
+	</figure>
+	
+	<figure class='fig'>
+		<img href="/contact" class='grey' id="uberSELECT" src="images/uberSELECT.png" onclick='loadDesc(this.id)'/> 
+		<figcaption class = 'caption'>Select</figcaption>
+	</figure>-->
+
+	<div id="uberProducts">
+		<img href="/contact" class='grey' id="uberX"    src="images/uberX.png" onclick='loadDesc(this.id)'/>  
+		<img href="/contact" class='grey' id="uberXL"   src="images/uberXL.png" onclick='loadDesc(this.id)'/>  
+		<img href="/contact" class='grey' id="UberSUV"  src="images/UberSUV.png" onclick='loadDesc(this.id)'/> 
+		<img href="/contact" class='grey' id="UberBLACK" src="images/UberBLACK.png" onclick='loadDesc(this.id)'/> 
+		<img href="/contact" class='grey' id="uberSELECT" src="images/uberSELECT.png" onclick='loadDesc(this.id)'/> 
+	</div>
+	
+	<div class="messagepop pop">
+		<p id='driver_name'>Driver:</p>
+		<p id='driver_no'>Number:</p>
+		<p id='ride'>Ride:</p>
+		<p id='driver_img'>Image:
+			<img id="driver_img_src" src="" alt="Driver Image" width="50px" height="50px"/>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<a class="p2X" href="/">push to X</a>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div id="popup_passenger" class="messagepop pop">
+		<p id='pasngr_name'>Passenger Name	:</p>
+		<p id='pasngr_no'>Passenger Number	:</p>
+		<p id='pasngr_loc'>Passenger Location	:</p>
+		<p id='driver_name'>Accept Ride
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<img src = "../img/camera.png" width="30" height="30" onclick="openpopup()"/>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div id="popup_driver" class="messagepop pop">
+		<p id='driver_name'>Your Name:</p>
+		<p id='driver_no'>Number:</p>
+		<p id='ride'>Location:</p>
+		<p id='driver_img'>Image:
+			<img id="driver_img_src" src="" alt="Pasngr. Image" width="50px" height="50px"/>
+		</p>
+		<p id='driver_name'>Accept Ride:
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride:
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<a class="p2X" href="/">push to X</a>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div class="messagepop pop1">
+		<p id='pass_Location'>Passenger Location:</p>
+		<p id='driver_name'>Accept Ride:
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride:
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+	</div>	
+
+	<div id="map" style="width:auto height:auto"></div>
+	<!--<div id="fixedfooter">DevOps</div>-->
+
+  </body>
+</html>

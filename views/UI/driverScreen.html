@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>driver | eUBER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link href="../ui/css/styles.css" rel="stylesheet">
+<link href="../ui/css/styles_camera.css" rel="stylesheet">
+  <script src="../ui/js/scripts.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>	
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">	
+	<script src="../js/webcam.js"></script>
+	<script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>	
+	<script src="../js/pushtox.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/api.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="../ui/js/scripts_camera.js"></script>	
+	<script src="../jquery-circle-progress-master/dist/circle-progress.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+ 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+	 	  
+	<script src="../js/openCamera.js"></script>  
+	<script src="../js/infowindow_Test.js"></script>  
+    
+	<script>
+	var driverFlag = true;
+	var driverMDN = Number(window.location.pathname.match(/\/driver\/(\d+)$/)[1]);
+	var ilhavo = new google.maps.LatLng(32.985454,-96.754319);
+	var source  = ilhavo;
+var number;
+
+
+	function loadPTTApp()
+            {
+					
+				
+					window.frames['ptt'].setLoginId('18111100194');
+					var numbers = [];
+					numbers[0] = '18111100195';
+						window.frames['ptt'].setCalledParty(numbers);
+                   
+            }
+			//createInfoWindow('page2');
+	function detectmob() { 
+ if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+    return true;
+  }
+ else {
+    return false;
+  }
+}	
+	console.log("Driver's MDN PASSED IS:"+driverMDN);
+				var user_id; //= data.msg.split('$')[0];
+				var user_loc; //= data.msg.split('$')[1];
+				var user_name; //= data.msg.split('$')[2];
+				var reqid; //= data.msg.split('$')[4];	
+				var bearer_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsicHJvZmlsZSIsImhpc3RvcnlfbGl0ZSIsImhpc3RvcnkiLCJyZXF1ZXN0Il0sInN1YiI6IjkwMDU4YjM1LWJkN2MtNGNiMy1iN2RiLWIzMTQzZThkNWNiNCIsImlzcyI6InViZXItdXMxIiwianRpIjoiZDNmYTQxZTUtZmJjNS00ZmYzLTgxOWYtZmJkYmE0MzA4ODM4IiwiZXhwIjoxNDUzNDk0MzIwLCJpYXQiOjE0NTA5MDIzMjAsInVhY3QiOiJsQVZkNmlqY0Y2UnM1RUdCOUV6UEpDNGI0ejRiazAiLCJuYmYiOjE0NTA5MDIyMzAsImF1ZCI6IjVJZEtVRWZqVG9XUklReDN2OTNOUFpoYjljRmNBMEdrIn0.Qk6zQkBvzR40LMUc3xZ92w6Jmkode21xY-04jE5gnvtPzXXpm5FdBMcvCidtuRXt63lTNExmQt0pd3_h-94E8JE3J9O_lQUUwsRb9y9scQKcyo-3YUohPKSL7xn8WJRYu78_PXSifcijZOHVXN-04LwieCZRHK0EUP4UQOqHDKo3YWvgp771tQvyN8fBhxz9hW0m6LtG0rUHFiPrdGNVnrLyjGfIF_TxpPiC123ILI4haCMfZkSv78NB_bhYqPi9atemMHw_oez7bvaKKridK0-PSJRu9NWTmPMIaHVmlbEy1RojfFj9VwdVB-fBRA9TaqAmCDq4zO3bbU0Kp82flw';
+				
+				var userLatLng ;
+	function acceptRide(){
+
+		$.ajax({	 
+							type: "PUT",						
+							contentType: 'application/json',						
+							url: "https://sandbox-api.uber.com/v1/sandbox/requests/"+ reqid,
+								
+								headers: { 	
+								Authorization: "Bearer " + bearer_Token
+							},
+							
+							data: JSON.stringify({"status" : "accepted"}),
+							
+							success: function(result) {
+								
+								console.log('Request update sent...');	
+								
+								var to=[];
+								to.push(number);
+								//bounds = new google.maps.LatLngBounds();
+								//bounds.extend(source);
+								//bounds.extend(userLatLng);
+								//map.fitBounds(bounds);
+ 								
+								var display  = document.getElementById('display');
+								if(display!=null)
+									display.parentNode.removeChild(display);
+								
+								
+								sendMessage('uber', 'Check_Req_id_status'+'$'+ reqid + '$'+ilhavo.lat()+'$'+ilhavo.lng(), 'accepted', to);
+							}
+					});	
+	
+	}
+	var map;
+	var bounds = new google.maps.LatLngBounds();
+		function setLocation(latitude,longitude){
+			document.getElementById("googlemapsjs2").innerHTML = "";
+			ilhavo = new google.maps.LatLng(latitude,longitude);
+			initialize();
+			google.maps.event.addDomListener(window, 'load', initialize);
+		
+		}
+		function uberCallback(data){
+			console.log(data);
+			if(data.type=='openinfowindow'){
+		
+				//createInfoWindow('popup',user_name,number,'Driver');
+				var pttiframe = document.getElementById('pttiframe');
+					//pttiframe.setAttribute('id','pttiframe');
+						//var pttiframe=document.getElementById('pttiframe');
+						
+						pttiframe.setAttribute('src','https://45.33.29.206/PTTWidget');
+						pttiframe.setAttribute('onload','loadPTTApp()');
+						//$('#myModal').modal('show');
+						$('#infoButton').click();
+		
+			}
+			if(data.type=='RequestDriverInfo'){
+		
+				//Set Rider's location on the map
+				user_id = data.msg.split('$')[0];
+				user_lat= data.msg.split('$')[1];
+				user_name = data.msg.split('$')[2];
+				reqid = data.msg.split('$')[4];
+				user_lng= data.msg.split('$')[5];
+				number = data.fromMDN;
+				geocoder = new google.maps.Geocoder();
+				var address = user_loc;
+
+				
+
+				
+				
+
+
+				/********************/
+
+				parentDiv = document.createElement('div');
+
+							parentDiv.setAttribute('id','display');
+							parentDiv.setAttribute('style','z-index: 9999;position:absolute;width: 300px; height: 300px; margin-left: 10px; margin-top: 100px');
+							// parentDiv.style.backgroundColor = 'black';
+							if(parentDiv!=null)
+								document.getElementById('con').appendChild(parentDiv);
+
+				//                      parentDiv.innerHTML = "";
+					console.log('Is Mobile?'+detectmob());
+				    if(detectmob()==true)
+				    {
+					document.getElementById("display").addEventListener("touchstart", function(event)
+					{
+					    acceptRide();
+
+					});
+				    }
+					else{
+								$('#display').on( "click", function() {
+								acceptRide();
+							});
+					}
+							    $('#display').circleProgress({
+					value: 1,
+					size: 300,
+					startAngle: -Math.PI/2,
+					fill: {
+					    gradient: ["blue", "blue"]
+					},
+				emptyFill: 'rgba(0, 0, 0, .2)',
+				animationStartValue: 0.0,
+				animation: {
+				  duration: 15000,
+				  easing: 'circleProgressEasing'
+				},
+
+			    });
+				$('#display').on('circle-animation-end', function(event){
+					var element = document.getElementById("display");
+					if(element!=null)
+						element.parentNode.removeChild(element);
+				});
+
+
+
+				document.getElementById('accept').style.visibility = "visible";
+
+
+				/*******************/
+
+
+
+						var latitude = user_lat;
+						console.log(latitude);
+						
+						var longitude = user_lng;
+						console.log(longitude);
+						//alert(latitude);
+				
+							userLatLng = new google.maps.LatLng(latitude, longitude);
+							// Do whatever you want with userLatLng.
+							
+							//Intialize the Path Array
+							var path = new google.maps.MVCArray();
+							
+							//Intialize the Direction Service
+							var service = new google.maps.DirectionsService();
+					
+					//Set the Path Stroke Color
+					var poly = new google.maps.Polyline({
+						map: map,
+						strokeColor: '#4986E7'
+					});			
+
+					poly.setPath(path);
+						service.route({
+							origin: ilhavo,
+							destination: userLatLng,
+							travelMode: google.maps.DirectionsTravelMode.DRIVING
+						}, function(result, status) {
+							if (status == google.maps.DirectionsStatus.OK) {
+							for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+								path.push(result.routes[0].overview_path[i]);
+							}
+							}
+						});					
+					    var icon = new google.maps.MarkerImage(
+									"../images/rider.png", //url
+									new google.maps.Size(30, 30)//size
+						);
+
+					var marker = new google.maps.Marker({
+						position: userLatLng,
+						title: user_id,
+						map: map,
+						icon: '../img/Pin.png',
+						opacity: 0.5
+					});
+					
+					// bounds.extend(userLatLng);
+					 //map.fitBounds(bounds);
+					//marker.setMap(latitude,longitude);
+					marker.setPosition(userLatLng);
+					map.setCenter(marker.getPosition());
+					
+						
+						
+					
+  
+					google.maps.event.addListener(marker,'click', function() {
+					sendMessage('uber','','openinfowindow',[]);
+						//var infowindow = new google.maps.InfoWindow({
+							
+						//});
+						//createInfoWindow('popup',user_name,number,'Rider');
+						var pttiframe = document.getElementById('pttiframe');
+						//pttiframe.setAttribute('id','pttiframe');
+						//var pttiframe=document.getElementById('pttiframe');
+						
+						pttiframe.setAttribute('src','https://45.33.29.206/PTTWidget');
+						pttiframe.setAttribute('onload','loadPTTApp()');
+						//$('#myModal').modal('show');
+						$('#infoButton').click();
+						//infowindow.setContent(document.getElementById('popup').innerHTML);
+						//infowindow.open(map,marker);
+			
+					});
+					//setLocation(latitude,longitude);
+				
+				
+				//set_user_location(data.msg.split('$')[0], data.msg.split('$')[1], data.msg.split('$')[2]);
+				
+				
+			}
+			console.log(data);
+		
+		}
+		function pushtoxCallback(data){
+			displayContents(data.type,data.msg);
+			console.log(data);
+		}
+		makeConnectionAndRegister(uberCallback,'uber',driverMDN,'Nish Patwa','driver');
+		registerCallback(pushtoxCallback,'pushtoX');
+		//setTimeout(registerClient(driverMDN,'Nish Patwa','driver'), 2000);
+		
+	
+	</script>
+	<style> 
+#accept {
+
+    background-color: red;
+    -webkit-animation-name: example; /* Chrome, Safari, Opera */
+    -webkit-animation-duration: 4s; /* Chrome, Safari, Opera */
+    animation-name: example;
+    animation-duration: 4s;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes example {
+    from {background-color: red;}
+    to {background-color: yellow;}
+}
+
+/* Standard syntax */
+@keyframes example {
+    from {background-color: red;}
+    to {background-color: yellow;}
+}
+</style>
+
+
+</head>
+<body>
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="infoButton" >
+      Launch demo modal
+    </button>
+	<div  id="popup" style="position:absolute;">
+			<!--<iframe name="ptt" id="pttiframe"  width=auto height=auto scrolling="no" > </iframe>-->
+	</div>
+  <div data-role="page" data-control-title="driver" data-theme="b" id="page2">
+  
+	
+	<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" >
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content" style="width:340px;">
+			   <div class="modal-header">
+					<iframe src="https://45.33.29.206/PTTWidget" width=auto height="320" scrolling="no"name="ptt" id="pttiframe"></iframe>
+				</div>
+				<div class="modal-body" >
+					<div id="info">
+						
+						<div class="text-center">
+							<img src = "../img/camera.png" width="50px" height ="50px" onclick = "OpenCamera('page2','camera');" ></img>
+						</div>
+						Name: Nish <br>
+						Number: 18111100195
+					</div>
+					
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+     
+      <div data-role="content" id="con">
+
+		
+		<div id="googlemapsjs2" class="google-map" style="position:absolute;width: 340px; height: 580px; margin-left: auto; margin-right: auto">
+		</div>
+	</div>
+<div id="circle_stat">
+
+
+</div>
+ 
+<script>
+
+</script>
+		  <script>  
+		  document.getElementById('infoButton').style.visibility = "hidden";
+			document.getElementById('popup').style.visibility = "hidden";
+				
+			function getLocation() {
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(showPosition);
+				} else { 
+					alert('Geolocation is not supported by this browser.');
+				}
+			}
+			
+			function showPosition(position) {
+			ilhavo = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+				//getProducts();
+				initialize();
+				//console.log(currentLocation);
+			}
+			getLocation();		  
+		  
+			function initialize() {
+  var mapOptions = {
+    center: ilhavo,
+    zoom: 18,
+    
+  };
+ var icon1 = new google.maps.MarkerImage(
+            "../img/rsz_marker.png"//, //url
+            //new google.maps.Size(80, 80)//, //size
+           // new google.maps.Point(0,0), //origin
+            //new google.maps.Point(anchor_left, anchor_top) //anchor 
+    );   
+  map = new google.maps.Map(document.getElementById("googlemapsjs2"),mapOptions);
+
+  // variable to define the content of Info Window
+  
+
+  // creates the new Info Window with reference to the variable infowindow and establishes the content
+  //content = document.getElementById('popup').innerHTML;//"<img id='ptt' src='images/PTT.png' alt='call_ptt' width='50px' height='50px'/> <img src = '../img/camera.png' width='30' height='30' onclick='loadContents()'/>";
+  var infowindow = new google.maps.InfoWindow({
+    //content: content
+  });
+   
+  // variable to define the options of the marker
+  var marker = new google.maps.Marker({
+    position: ilhavo, // variable with the coordinates Lat and Lng
+    map: map,
+	//draggable:true,
+    //title:"Maritime Museum of Ílhavo",
+	icon:icon1
+  });
+	
+				 //bounds.extend(ilhavo);
+					// map.fitBounds(bounds);
+  // procedure to show the Info Window using a click on the marker
+  google.maps.event.addListener(marker, 'click', function() {
+  //loadContents();
+  //var parentdiv = document.getElementById('parent');
+  //parentdiv.style.visibility = "visible";
+    //infowindow.open(map,marker); // map and marker are the variables defined previously
+	//loadContents();
+  });
+	
+  // event to close the infowindow with a click on the map
+  google.maps.event.addListener(map, 'click', function() {
+	//parentdiv.style.visibility = "hidden";
+		hideDiv();
+    //infowindow.close();
+  });
+ google.maps.event.addListener(map, 'dragend', function () {
+     
+
+     // We're out of bounds - Move the map back within the bounds
+
+     var c = map.getCenter();
+     console.log(c.lng());
+	 console.log(c.lat());
+	 var latlng = new google.maps.LatLng(c.lat(),c.lng());
+		//marker.setPosition(latlng);
+ });  
+  
+}
+//google.maps.event.addDomListener(window, 'load', initialize);	
+
+	
+		  </script>
+        
+			<div id = "accept">
+				
+			<!--<input type="button" data-theme="a" data-icon="alert" data-iconpos="left" value="Accept"  class="slide left" onclick = "acceptRide()"/>-->
+			</div>
+      </div>
+  </div>
+  <script>
+
+  document.getElementById('accept').style.visibility = "hidden";
+  //OpenCamera();
+/*function loadPTTApp()
+            {
+					
+				if(driverFlag == false)
+					window.frames['ptt'].setLoginId(''+riderMDN+'');
+				else{
+						window.frames['ptt'].setLoginId(''+driverMDN+'');
+						alert('Logged in'+driverMDN);
+					numbers = [];
+						numbers[0] = ''+number+'';
+						window.frames['ptt'].setCalledParty(numbers);
+				
+				}
+				
+                   
+            }
+*/
+function hide_Popup() {
+   			 document.getElementById("popup").style.display = 'none';
+		}	
+		
+  </script>
+ 
+  
+</body>
+</html>

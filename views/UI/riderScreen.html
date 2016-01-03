@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>rider | eUBER</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link href="../ui/css/styles.css" rel="stylesheet">
+  <script src="../ui/js/scripts.js"></script>
+	<script src="../js/webcam.js"></script>
+	<script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>	
+	<script src="../js/pushtox.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/api.js"></script>  
+	<script src="../js/openCamera.js"></script>  
+	<script src="../js/infowindow.js"></script> 
+
+  <script type="text/javascript">
+ 
+			var dest;
+			var markers = [];
+			var currentLocation; 
+			var driverFlag = false;
+			var selectedProductID;
+			var selectedProductImage;
+			var map;
+			var driverMDN;
+					  
+                  window.CodiqaControls && window.CodiqaControls.register('googlemaps', 'googlemapsjs4', {
+              ready: function(control) {
+	         function getLocation() {
+				if (navigator.geolocation) {
+						navigator.geolocation.getCurrentPosition(showPosition);
+				} else { 
+					alert('Geolocation is not supported by this browser.');
+					}
+				}
+			
+			function showPosition(position) {
+			currentLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+				
+				console.log(currentLocation);
+			}
+			getLocation();
+                  control.options = {
+                      zoom: 14,
+                      mapTypeId: google.maps.MapTypeId.ROADMAP
+                  };
+  
+                  control.el = document.getElementById(control._id);
+                  
+				  control.map = new google.maps.Map(control.el, control.options);
+				   
+					map = control.map;
+					var marker;
+                  var geocoder = new google.maps.Geocoder();
+				   var searchbox = new google.maps.places.SearchBox(document.getElementById('destination'));
+					searchbox.addListener('places_changed', function() {
+						var places = searchbox.getPlaces();
+					
+						if (places.length == 0) {
+						return;
+						}
+						markers.forEach(function(marker) {
+							marker.setMap(null);
+						});
+					
+						markers = [];
+					
+						// For each place, get the icon, name and location.
+						var bounds = new google.maps.LatLngBounds();
+						places.forEach(function(place) {
+						var icon = {
+							url: place.icon,
+							size: new google.maps.Size(71, 71),
+							origin: new google.maps.Point(0, 0),
+							anchor: new google.maps.Point(17, 34),
+							scaledSize: new google.maps.Size(25, 25)
+						};
+					
+						// Create a marker for each place.
+						markers.push(new google.maps.Marker({
+							map: control.map,
+							icon: icon,
+							title: place.name,
+							position: place.geometry.location
+						}));
+					
+						dest = place.geometry.location;
+					
+						//Route to Destination
+											//Intialize the Path Array
+					var path = new google.maps.MVCArray();
+					
+					//Intialize the Direction Service
+					var service = new google.maps.DirectionsService();
+					
+					//Set the Path Stroke Color
+					var poly = new google.maps.Polyline({
+						map: control.map,
+						strokeColor: '#4986E7'
+					});			
+
+					poly.setPath(path);
+						service.route({
+							origin: currentLocation,
+							destination: dest,
+							travelMode: google.maps.DirectionsTravelMode.DRIVING
+						}, function(result, status) {
+							if (status == google.maps.DirectionsStatus.OK) {
+							for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+								path.push(result.routes[0].overview_path[i]);
+							}
+							}
+						});					
+
+					
+					
+					
+					
+					
+						if (place.geometry.viewport) {
+							// Only geocodes have viewport.
+							bounds.union(place.geometry.viewport);
+						} else {
+							bounds.extend(place.geometry.location);
+						}
+						});
+						bounds.extend(currentLocation);
+						control.map.fitBounds(bounds);
+					});
+
+                  
+                   
+						
+							navigator.geolocation.getCurrentPosition(function(location){
+							currentLocation = new google.maps.LatLng(location.coords.latitude,location.coords.longitude);
+								getProducts();
+							 var marker = new google.maps.Marker({
+                              map: control.map,
+							  draggable:true,
+                              position: currentLocation//results[0].geometry.location
+
+                          });
+                          control.center = currentLocation;
+                          control.map.setCenter(control.center);
+							
+							
+							});
+							
+							
+						
+  
+                    google.maps.event.addListener(control.map,'drag',function(event) {
+						console.log('dragged');
+				});     
+						 
+                      
+					  
+                  
+  
+              }
+          });
+		  
+          </script>
+	
+  <div data-role="content" id="popup" hidden>
+	<div id="PTT" data-role='collapsible'>
+		<iframe name="ptt" id="pttiframe" > </iframe>
+	</div>	
+          
+  </div>
+</head>
+
+<body>
+	<div data-role="page" data-control-title="rider" id="page2">
+	<div data-role="content" id="con" style="position:absolute;">
+	
+		<div data-role="fieldcontain" data-controltype="searchinput">
+			<input name="Destination" id="destination" placeholder="Destination" value="" type="search" data-mini="true"/>
+        	</div>
+	
+		<div id="googlemapsjs4" class="google-map" style="width: 340px; height: 430px; margin-left: auto; margin-right: auto">	
+		</div>
+        
+		<div data-role="fieldcontain" data-controltype="slider" id ="slider">
+        	</div>
+        
+	</div>
+        </div>
+  
+  <script>
+  
+  var products = new Object();
+  function requestUber(id)
+{
+	
+	
+	//alert('Do you want to request an Uber');
+	
+	console.log(currentLocation.lat());
+	console.log(products[0].product_id);
+	console.log(dest);
+	selectedProductID = id;
+	selectedProductImage = document.getElementById(id).src;
+	document.getElementById(id).src = '../img/uber_processing.gif';
+	
+	var endlat = currentLocation.lat()+1;
+	var endlng = currentLocation.lng()+1;
+	if(dest!=undefined){
+		endlat = dest.lat();
+		endlng = dest.lng();
+	}
+	 $.ajax({
+	 
+    type: "POST",
+	contentType: 'application/json',
+    url: "https://sandbox-api.uber.com/v1/requests",
+	
+	data: JSON.stringify({"start_latitude" : (currentLocation.lat()), "start_longitude" : (currentLocation.lng()) , "end_latitude" : (endlat) , "end_longitude" : (endlng) , "product_id" : id}),
+	headers: { 	
+    	Authorization: "Bearer " + bearer_Token
+    },
+    success: function(result) {
+		
+		console.log(result);
+		request_Status(result);
+		
+    }
+  });
+  
+
+
+  
+  
+}
+function request_Status(req_status)
+{
+	
+	console.log('Request status : '+ req_status.status);
+	req_status.status="processing"; 
+	if(req_status.status=='processing')
+	{
+		alert(' Waiting for Driver '); 		
+		sendMessage('uber', User_uuid+'$'+currentLocation+'$'+User_name+'$'+User_no+'$'+req_status.request_id, 'RequestDriverInfo', []);		
+		return;
+	}
+	
+}
+	
+	
+	//products['1'] = '../img/uberx_Product.png';
+	//products['2'] = '../img/uberxl_Product.png';
+	//products['3'] = '../img/ubersuv_Product.png';
+	//products['4'] = '../img/uberselect_Product.png';
+	//document.getElementById('slider1').style.visibility = "hidden";
+	function uberCallBack(data){
+		if(data.type=='accepted'){
+			console.log('Driver accepted the request');
+			alert('Driver accepted the request');
+			document.getElementById(selectedProductID).src = selectedProductImage;
+			pole_status(data.msg.split('$')[1],data.msg.split('$')[2],data.msg.split('$')[3]);
+			driverMDN = data.fromMDN;
+			console.log(data);
+		
+		}
+		
+	}
+	function pushtoxcallback(data){
+		displayContents(data.type,data.msg);
+		console.log(data);
+	}
+	var riderMDN = Number(window.location.pathname.match(/\/riderScreen\/(\d+)$/)[1]);
+	makeConnectionAndRegister(uberCallBack,'uber',riderMDN,'Nish Patwa','rider');
+	registerCallback(pushtoxcallback,'pushtoX');
+	
+	
+	
+var bearer_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsicHJvZmlsZSIsImhpc3RvcnlfbGl0ZSIsImhpc3RvcnkiLCJyZXF1ZXN0Il0sInN1YiI6IjkwMDU4YjM1LWJkN2MtNGNiMy1iN2RiLWIzMTQzZThkNWNiNCIsImlzcyI6InViZXItdXMxIiwianRpIjoiZDNmYTQxZTUtZmJjNS00ZmYzLTgxOWYtZmJkYmE0MzA4ODM4IiwiZXhwIjoxNDUzNDk0MzIwLCJpYXQiOjE0NTA5MDIzMjAsInVhY3QiOiJsQVZkNmlqY0Y2UnM1RUdCOUV6UEpDNGI0ejRiazAiLCJuYmYiOjE0NTA5MDIyMzAsImF1ZCI6IjVJZEtVRWZqVG9XUklReDN2OTNOUFpoYjljRmNBMEdrIn0.Qk6zQkBvzR40LMUc3xZ92w6Jmkode21xY-04jE5gnvtPzXXpm5FdBMcvCidtuRXt63lTNExmQt0pd3_h-94E8JE3J9O_lQUUwsRb9y9scQKcyo-3YUohPKSL7xn8WJRYu78_PXSifcijZOHVXN-04LwieCZRHK0EUP4UQOqHDKo3YWvgp771tQvyN8fBhxz9hW0m6LtG0rUHFiPrdGNVnrLyjGfIF_TxpPiC123ILI4haCMfZkSv78NB_bhYqPi9atemMHw_oez7bvaKKridK0-PSJRu9NWTmPMIaHVmlbEy1RojfFj9VwdVB-fBRA9TaqAmCDq4zO3bbU0Kp82flw';
+
+function get_User_details()
+{		
+			$.ajax({
+			
+			type 	: 'GET',
+			//contentType: 'application/json',
+			//url		: 'https://login.uber.com/oauth/v2/token?client_secret=' + my_secret + '&client_id=' + my_cli_id + '&grant_type=authorization_code' + '&redirect_uri=https://45.33.29.206:8000/load.html' + '&code=' + recvd_auth_code,
+			url		: 'https://sandbox-api.uber.com/v1/me',
+			//url		: 'https://login.uber.com/oauth/v2/token?client_secret=' + my_secret + '&client_id=' + my_cli_id + '&grant_type=authorization_code' + '&redirect_uri=https://wcsr.ms1b.kodiakgw.com/UberApp/load.html' + '&code=' + recvd_auth_code,
+			//dataType: 'text',
+			headers: {
+				Authorization: "Bearer " + bearer_Token
+			},
+					
+			success: function(result)
+			{
+				console.log('UUID		: ' + result.uuid);	
+				console.log('PICTURE 	:'	+ result.picture);	
+				console.log('FIRST Name	:'	+ result.first_name);	
+				console.log('LAST NAME	:'	+ result.last_name);
+				console.log('E-MAIL		:'	+ result.email);	
+				
+				User_no 	= result.uuid.replace(/[^0-9]/g, '').substring(0,10);
+				User_name 	= result.first_name + ' ' + result.last_name; 
+				User_uuid 	= result.uuid; 
+				
+				
+				console.log('PHONE		:'	+ User_no);
+				makeConnectionAndRegister(uberCallBack,'uber',riderMDN,result.first_name,'rider');
+				registerCallback(pushtoxcallback,'pushtoX');
+				//getProducts();				
+				
+			}
+	})
+	
+}	
+ 
+	
+function getProducts() {
+	console.log(currentLocation.lat());
+  $.ajax({
+    url: "https://sandbox-api.uber.com/v1/products?latitude=" + currentLocation.lat() + "&" + "longitude=" + currentLocation.lng(),
+    headers: {
+    	Authorization: "Bearer " + bearer_Token
+    },
+    success: function(result) {
+		
+		//console.log(result);	
+		var cardiv = document.getElementById('slider');
+		//alert('products received');
+		for(i=0; i< result.products.length ; i++)
+			{
+				//images.push(result.products[i].image);
+				//console.log(result.products[i].display_name);
+				products[i] = result.products[i];
+				
+				
+				//console.log(products);				
+				
+				
+				var img = document.createElement('img');
+				img.src = products[i].image;				
+				img.setAttribute('style','width:62px;');
+				img.setAttribute('id',products[i].product_id);
+				img.setAttribute('onclick','requestUber(this.id);');
+				cardiv.appendChild(img);
+				
+				
+				/*document.getElementById(result.products[i].display_name).src = result.products[i].image;
+				document.getElementById(result.products[i].display_name).className = "bright"; 
+				product_Image[result.products[i].display_name] = result.products[i].image; 
+				
+				prod_List[result.products[i].display_name] =  result.products[i]; */
+				//console.log(prod_List[result.products[i].display_name]); 
+			}
+    }
+  });
+}	
+get_User_details();	 
+function pole_status(req_id,lat,longi)
+{		
+
+	$.ajax({
+		type: "GET",
+		contentType: 'application/json',
+		url: "https://sandbox-api.uber.com/v1/requests/"+ req_id,
+		headers: { 	
+			Authorization: "Bearer " + bearer_Token
+		},
+				
+		success: function(result) 
+		{
+			
+			console.log(' Request status : ' + result);
+			if(result.status=='accepted')
+			{
+					//document.getElementById(selected_model).src = product_Image[selected_model];
+					console.log('Driver Accepted == Name : ' + result.driver.name + " Number : " + result.driver.phone_number + " Location : " + result.location); 
+					//to = [];
+					//to.push(result.driver.phone_number);
+					console.log(result.location.latitude);
+					console.log(result.location.longitude);
+					 var userLatLng = new google.maps.LatLng(lat, longi);
+					// Do whatever you want with userLatLng.
+					var marker = new google.maps.Marker({
+						position: userLatLng,
+						title: 'Driver Location',
+						map: map,
+						icon: '../img/uberX.png'
+					});
+	     
+					content = "<img id='ptt' src='../images/PTT.png' alt='call_ptt' width='50px' height='50px'/> <img src = '../img/camera.png' width='30' height='30' onclick='loadContents()'/>";
+					var infowindow = new google.maps.InfoWindow({
+							content: content
+						});
+					
+  
+					google.maps.event.addListener(marker,'click', function() {
+						var infowindow = new google.maps.InfoWindow({			
+						});
+						//createInfoWindow('info');
+						createInfoWindow('popup',result.driver.name,driverMDN,'Driver');
+						infowindow.setContent(document.getElementById('popup').innerHTML);
+						infowindow.open(map,marker);
+			
+					});
+					marker.setMap(map);
+	
+					return;
+			}
+			else
+			{
+				//Need to check with Mourya why this function is required.
+				pole_status(req_id); 
+			}				
+		}
+	});
+
+}
+//getProducts();
+//displayContents();
+
+
+
+
+  </script>
+  		
+  
+</body>
+</html>

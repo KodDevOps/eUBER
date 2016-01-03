@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<title>rider | eUBER</title>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="https://45.33.29.206/favicon.ico?v=2" /> 
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../css/uber.css">
+    <link rel="stylesheet" type="text/css" href="../../css/uberSelect.css">
+    
+
+    <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+
+    <script src="../../js/webcam.js"></script>
+    <script src="../../js/pushtox.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/uber.js"></script>
+    <script src="../../js/map.js"></script>
+	<script src="../../js/infowindow_Test.js"></script>
+	<script src="../../js/openCamera.js"></script>
+	<link href="../ui/css/styles_camera.css" rel="stylesheet">
+
+  <script src="../ui/js/scripts_camera.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZGkEKqXuwaPk-6k5xAZynRjIYZHK7Pjs&libraries=places&callback=initAutocomplete" async defer></script>
+
+	
+  </head>
+  <body>
+   <div data-role="page" data-control-title="driver" data-theme="b" id="page2">
+   
+   </div>
+	<!-- check with Mourya -->
+    	<!--<div id="fixedheader">
+		<a href="http://localhost:8000/index.html" style="color:#ffffff">uTalk</a>
+	</div>-->
+	<script>
+	var driverFlag = false;
+		loadRiderDriverDetails();
+		function loadPTTApp()
+            {
+					
+				if(driverFlag == false)
+					window.frames['ptt'].setLoginId('18111100195');
+					var numbers = [];
+					numbers[0] = '18111100194';
+						window.frames['ptt'].setCalledParty(numbers);
+                   
+
+            }
+			//createInfoWindow('page2');
+		/*function loadPTTApp()
+            {
+					
+				if(driverFlag == false){
+					window.frames['ptt'].setLoginId(''+riderMDN+'');
+					alert('Logged in'+riderMDN);
+					numbers = [];
+						numbers[0] = ''+FromdriverMDN+'';
+						window.frames['ptt'].setCalledParty(numbers);
+				}					
+				else{
+						window.frames['ptt'].setLoginId(''+driverMDN+'');
+				
+				}
+				
+					
+                   
+            }*/
+		//openCamera();
+		function hide_Popup() {
+			
+   			 document.getElementById("page2").style.display = 'none';
+		}	
+	</script>
+	
+	<div class="request-view page full" style="display: block;">
+		<!--<div id="search-control" class="searchcontrol">
+			<input type='text' placeholder='Search...' id='search-text-input' />
+			<div id='button-holder'>
+				<img src='../images/split-arrow.png' id="destination" onClick="showDestDiv()"/>
+				<img src='../images/icon_magnify_glass.png' onClick="getProducts()"/>
+			</div>
+			<div id="destInput" style="display:none;">
+				<input  id="pac-input-2" class="controls" type="text" placeholder="To"/>
+			</div>
+		</div>-->	
+
+	<!--<input  id="pac-input-2" class="controls" type="text" placeholder="To"/>-->
+
+	<!--<div id="uberProducts">
+		<img href="/contact" class='grey' id="uberX"    src="images/uberX.png" onclick='loadDesc(this.id)'/>
+		<img href="/contact" class='grey' id="uberXL"   src="images/uberXL.png" onclick='loadDesc(this.id)'/>  
+		<img href="/contact" class='grey' id="UberSUV"  src="images/UberSUV.png" onclick='loadDesc(this.id)'/> 
+		<img href="/contact" class='grey' id="UberBLACK" src="images/UberBLACK.png" onclick='loadDesc(this.id)'/> 
+		<img href="/contact" class='grey' id="uberSELECT" src="images/uberSELECT.png" onclick='loadDesc(this.id)'/> 
+	</div>-->
+	
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="infoButton" hidden>
+      Launch demo modal
+    </button>
+	
+	<div id="myModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" >
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content" style="width:340px;">
+			   <div class="modal-header">
+					<div id = "iframeDiv">
+						<iframe src="https://45.33.29.206/PTTWidget" width=auto height="320" scrolling="no"name="ptt" id="pttiframe"></iframe>
+					</div>
+					<div id ="videodiv" style="height:0px;">
+						
+						
+					</div>
+				</div>
+				
+				<div class="modal-body" >
+					<div id="info">
+						
+						<div class="text-center" id="pushtoxIcon">
+							<img src = "../img/camera.png" width="50px" height ="50px" onclick = "OpenCamera('page2','camera');" id="camreraIcon"></img>
+						</div>
+						<div id="cameraicons" class="row" style="height:0px;">
+							
+							
+						</div>
+						Name: Mourya <br>
+						Number: 18111100194
+					</div>
+					
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="messagepop pop">
+		<p id='driver_name'>Driver:</p>
+		<p id='driver_no'>Number:</p>
+		<p id='ride'>Ride:</p>
+		<p id='driver_img'>Image:
+			<img id="driver_img_src" src="" alt="Driver Image" width="50px" height="50px"/>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<a class="p2X" href="/">push to X</a>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div id="popup_passenger" class="messagepop pop">
+		<p id='pasngr_name'>Passenger Name	:</p>
+		<p id='pasngr_no'>Passenger Number	:</p>
+		<p id='pasngr_loc'>Passenger Location	:</p>
+		<p id='driver_name'>Accept Ride
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<img src = "../img/camera.png" width="30" height="30" onclick="openpopup()"/>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div id="popup_driver" class="messagepop pop">
+		<p id='driver_name'>Your Name:</p>
+		<p id='driver_no'>Number:</p>
+		<p id='ride'>Location:</p>
+		<p id='driver_img'>Image:
+			<img id="driver_img_src" src="" alt="Pasngr. Image" width="50px" height="50px"/>
+		</p>
+		<p id='driver_name'>Accept Ride:
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride:
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+		<img id="ptt" src="images/PTT.png" alt="call_ptt" width="50px" height="50px"/> 
+		<a class="p2X" href="/">push to X</a>
+		<a class="close" href="/">close</a>
+	</div>
+
+	<div class="messagepop pop1">
+		<p id='pass_Location'>Passenger Location:</p>
+		<p id='driver_name'>Accept Ride:
+			<button id="accept" onClick="wait_for_driver(this.id)"> Accept </button>
+		</p>
+		<p id='driver_name'>Cancel Ride:
+			<button id="cancel" onClick="wait_for_driver(this.id)"> Cancel </button>
+		</p>
+	</div>	
+
+	<div id="map" style="width:auto height:auto"></div>
+	<div data-role="content" id="popup" style="width:auto height:auto">
+	
+		
+			<!--<iframe name="ptt" id="pttiframe"  width=auto height="320" scrolling="no"> </iframe>-->
+		
+          
+   </div>
+	<!--<div id="fixedfooter">DevOps</div>-->
+
+	<div class="location-bar" id="location-bar">
+    		<p class="pickup-location">
+      		<small>Pickup Location</small>
+      		<span id="address">1501 10th St</span>
+    		</p>
+    		<a class="btn search"></a>
+    		<a class="btn center"></a>
+	</div>
+
+
+	<div class="set-pickup-wrap" id="set-pickup-wrap">
+      	   <a id="set-pickup-btn"  class="btn set-pickup">
+        	<div class="arrow"></div>
+        	<div class="eta show-eta">
+          	<div class="tracer"></div>
+          		<strong>5</strong> min
+        	</div>
+        	<div class="cta" id="cta">REQUEST UBER GO</div>
+        	<div class="set" onclick="loadDesc(this.id)"></div>
+      	   </a>
+	</div>
+	
+
+<div id="processing">
+	<img src="images/uber_processing.gif"/>	
+</div>
+
+
+<div class="vehicle-selector" id="vehicle-selector">
+	<div id="slider1" class="slider" style="transform: translate(112.5px, 0px);">
+		<img src="../img/mono-uberx.png" id="sliderImg">
+	</div>
+<ul>
+  <li class="first shift" id="uberX" data-id="430" data-index="0">
+    <div class="wrap">
+      <p>
+        
+        uberX
+      </p>
+      <div class="rail"></div>
+      <div class="node" onclick="changeStyle('uberX')"></div>
+    </div>
+  </li>
+
+  <li class="uberXL" data-id="1621" id="uberXL" data-index="1">
+    <div class="wrap">
+      <p>
+        
+        uberXL
+      </p>
+      <div class="rail"></div>
+      <div class="node" onclick="changeStyle1('uberXL')"></div>
+    </div>
+  </li>
+
+  <li class="uberSELECT" data-id="2616" id="uberSELECT" data-index="2">
+    <div class="wrap">
+      <p>
+        
+        uberSELECT
+      </p>
+      <div class="rail"></div>
+      <div class="node" onclick="changeStyle2('uberSELECT')"></div>
+    </div>
+  </li>
+
+  <li class="UberBLACK" data-id="29" id="UberBLACK" data-index="3">
+    <div class="wrap">
+      <p>
+        
+        BLACK CAR
+      </p>
+      <div class="rail"></div>
+      <div class="node" onclick="changeStyle3('UberBLACK')"></div>
+    </div>
+  </li>
+
+  <li class="last" id="UberSUV" data-id="51" data-index="4">
+    <div class="wrap">
+      <p>
+        
+        SUV
+      </p>
+      <div class="rail"></div>
+      <div class="node" onclick="changeStyle4('UberSUV')"></div>
+    </div>
+  </li>
+
+</ul>
+</div>
+
+</div>
+<script>
+$('#infoButton').hide();
+</script>
+  </body>
+</html>

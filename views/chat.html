@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<!--
+	This file is rendered by express.js, when the rurl /chat/123456 is visited in a browser.
+	It includes jQuery, socket.io.js (it is automatically served by the socket.io library), 
+	and a few more JavaScript files that you should check out.
+-->
+
+<html>
+
+<head>
+
+
+	<title>Demo</title>
+	<script>
+	
+	
+	</script>
+	<link type="text/css" rel="stylesheet" href="../css/stylesheet.css" />
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans Condensed:300italic,300,700" rel="stylesheet" type="text/css">
+	<script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+
+</head>
+
+<body>
+
+
+	<header class="banner">
+
+		<h1 class="bannertext">
+			
+		</h1>
+
+	</header>
+
+
+	<section class="section">
+
+		<!-- These elements are displayed as white info cards in the middle of the screen -->
+
+		<div class="connected">
+
+
+		</div>
+
+		<div class="personinside">
+
+
+		</div>
+
+		<div class="invite-textfield">
+
+
+		</div>
+
+		<div class="left">
+
+
+
+		</div>
+
+		<div class="toomanypeople">
+
+
+
+		</div>
+
+
+		<div class="chatscreen">
+
+			<ul class="chats">
+				<!-- The chat messages will go here -->
+			</ul>
+
+		</div>
+
+	</section>
+
+	<footer>
+
+		<form id="chatform">
+
+		
+			<input type ="text" id="mdn" />
+			<input type ="button" id ="sendRegister" value ="register" />
+			<input type="file" name="file" id ="imagefile" hidden>
+			<textarea id="message" placeholder="Write something.."></textarea>
+			
+
+			<input type="submit" id="submit" value="SEND"/>
+			
+			
+		</form>
+		<img src = "../img/init.jpg" height ="50" width ="30" id ="startrecording" style="margin-left:30"/>
+		<img src = "../img/attach.png" height ="45" width ="30" id ="attachfiles" style="margin-left:30"/>
+		
+	</footer>
+
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="../js/moment.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/chat.js"></script>
+	<script src="../js/api.js"></script>
+
+</body>
+
+</html>

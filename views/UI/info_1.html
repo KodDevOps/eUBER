@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>infowindow | Camera</title>
+  <!--
+	<link rel="shortcut icon" href="https://45.33.29.206/favicon.ico?v=2" />
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link href="../ui/css/styles_camera.css" rel="stylesheet">
+
+  <script src="../ui/js/scripts_camera.js"></script>
+  <script src="../js/infowindow_Test.js"></script>
+  <script src="../js/openCamera.js"></script>
+	
+  <script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+  <script src="../js/webcam.js"></script>  
+  <script src="//cdn.webrtc-experiment.com/RecordRTC.js"></script>
+  <script src="../js/openCamera.js"></script>  
+  <script src ="http://html5-demos.appspot.com/static/getusermedia/whammy.min.js"></script>
+ 
+</head>
+<body>
+  <div data-role="page" data-control-title="infowindow" id="page2" style="background-color: lightblue">
+
+  
+   <script>
+     var driverFlag = false;
+     var numbers=[]; 
+   	function loadPTTApp()
+            {
+					
+				if(driverFlag == false)
+					window.frames['ptt'].setLoginId('18111100198');
+					numbers[0]='18111100197';
+					window.frames['ptt'].setCalledParty(numbers);
+                   
+            }
+   
+	createInfoWindow('page2');
+
+  </script>
+
+	<!--
+	<button style="font-face: 'Comic Sans MS'; font-size: larger; color: teal; background-color: #FFFFC0; border: 3pt ridge lightgrey; position:absolute; right:0; bottom:0" id="close_btn" onClick='hide()'>Close</button>
+	-->
+
+	<script>
+		
+		function hide_Popup() {
+   			 document.getElementById("page2").style.display = 'none';
+		}	
+	</script>
+  </div>
+</body>
+</html>
